@@ -3,15 +3,15 @@
     <div :class="[isShowbgc ? 'bgc' : '', 'topBar']">
       <div class="item">
         <div class="logo">
-          <img src="@/assets/logo.png"/>
+          <a href="/"><img src="@/assets/logo.png"/></a>
         </div>
-        <div>我的钱包</div>
+        <div><a href="/wallet">我的钱包</a></div>
         <div>导入Keystore</div>
         <div>导出Keystore</div>
       </div>
       <div class="item">
-        <div>登录</div>
-        <div>注册</div>
+        <div><a href="/login">登录</a></div>
+        <div><a href="/register">注册</a></div>
         <!-- <div class="avatar">
           <img src="@/assets/avatar.jpg"/>
           <span>未登录</span>
@@ -80,6 +80,9 @@ export default {
   display flex
   justify-content space-between
   color #FFFFFF
+  a
+    text-decoration none
+    color #fff
   .item
     display flex
     align-items center
