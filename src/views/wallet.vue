@@ -21,21 +21,34 @@
             <b>{{i.balance}}</b>
           </p>
           <div class="wallet-items-btn">
-            <button>充值</button>
+            <button @click="open = true">充值</button>
             <button>转账</button>
             <button>创建主网账户</button>
           </div>
         </div>
       </div>
     </div>
+    <modal
+      :visible="open"
+      @hide="open = false"
+      :resize-width='{1200:"60%",992:"80%",768:"90%"}'
+      :animation-panel="'modal-slide-top'"
+      >
+      <p>Lorem ipsum dolor sit amet</p>
+    </modal>
   </div>
 </template>
 
 <script>
+import modal from '@/components/modal'
 export default {
   name: 'App',
+  components: {
+    modal
+  },
   data () {
     return {
+      open: false,
       walletList: [{
         name: 'BOS',
         balance: 24222600.0202
