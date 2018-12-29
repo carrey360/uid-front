@@ -95,6 +95,8 @@ export default {
     outline none
     box-sizing border-box
     border-radius 2px
+    &:hover, &:focus
+      border-color #CE2344
   p
     font-size 12px
     color #A8A8A8
