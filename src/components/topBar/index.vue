@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="topBar">
+    <div :class="[isShowbgc ? 'bgc' : '', 'topBar']">
       <div class="item">
         <div class="logo">
           <img src="@/assets/logo.png"/>
@@ -16,13 +16,63 @@
           <img src="@/assets/avatar.jpg"/>
           <span>未登录</span>
         </div> -->
-        <div>EN</div>
+        <div style="display: flex;align-items: center;">
+          <IconFont class="iconfont" name="icon-earth-" />
+          <dropdown :close-on-click="true" :class-name="'dropdown'">
+            <template slot="btn">{{ lang }}</template>
+            <template slot="body">
+              <ul><li v-for="item in ['EN', 'CN']" :key="item" @click="langChange(item)">{{ item }}</li></ul>
+            </template>
+          </dropdown>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
+<script>
+import Dropdown from 'bp-vuejs-dropdown'
+import IconFont from '@/components/Iconfont'
+
+export default {
+  name: 'topBar',
+  components: {Dropdown, IconFont},
+  props: {
+    isShowbgc: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data () {
+    return {
+      lang: 'EN'
+    }
+  },
+  methods: {
+    langChange (lang) {
+      this.lang = lang
+    }
+  }
+}
+</script>
+
 <style lang="stylus" scoped>
+.bgc
+  background-color #CE2344
+.iconfont
+  margin-right 5px
+
+>>>.bp-dropdown__btn
+  border 0 none
+>>>.dropdown-bp__body
+  background #CE2344
+  color #ffffff
+  li
+    padding 5px
+    cursor pointer
+>>>.bp-dropdown__btn--active
+  background #CE2344
+
 .topBar
   position relative
   height 80px

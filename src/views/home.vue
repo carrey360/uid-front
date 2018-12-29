@@ -3,7 +3,7 @@
     <div class="head">
       <img class="top-bg" src="@/assets/home/top.png" />
       <div class="top-bar">
-       <topBar></topBar>
+       <topBar :isShowbgc="isShowbgc"></topBar>
       </div>
       <!-- <div class="middle-content">
         <div>
@@ -48,6 +48,7 @@ export default {
   components: {topBar},
   data () {
     return {
+      isShowbgc: false,
       dappList: [{
         name: 'BetDice',
         auth: '--',
