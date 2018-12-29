@@ -107,7 +107,7 @@
 import modal from '@/components/modal'
 import topBar from '@/components/topBar'
 import LimitInput from '@/components/input'
-import IconFont from '@/components/IconFont'
+import IconFont from '@/components/Iconfont'
 export default {
   name: 'App',
   components: { modal, topBar, LimitInput, IconFont },
