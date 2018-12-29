@@ -23,19 +23,47 @@
           </p>
           <div class="wallet-items-btn">
             <button @click="open = true">充值</button>
-            <button>转账</button>
+            <button @click="transferOpen = true">转账</button>
             <button>创建主网账户</button>
           </div>
         </div>
       </div>
     </div>
     <modal
-      :visible="open"
-      @hide="open = false"
-      :resize-width='{1200:"60%",992:"80%",768:"90%"}'
+      :visible="chargeOpen"
+      @hide="chargeOpen = false"
+      :resize-width='{1200:"476",992:"476",768:"90%"}'
+      defaultWidth="476px"
       :animation-panel="'modal-slide-top'"
       >
-      <p>Lorem ipsum dolor sit amet</p>
+      <h1 class="wallet-dialog-title">请按以下信息充值</h1>
+      <div class="wallet-dialog-content">
+        <div class="wallet-dialog-content-input-label">
+          <span>Account to be credited</span>
+          <span class="copy"><IconFont name="icon-fuzhi" type="svg"/>复制</span>
+        </div>
+        <LimitInput  warn=""/>
+        <div class="wallet-dialog-content-input-label">
+          <span>Memo</span>
+          <span class="copy"><IconFont name="icon-fuzhi" type="svg"/>复制</span>
+        </div>
+        <LimitInput warn=""/>
+      </div>
+    </modal>
+    <modal
+      :visible="transferOpen"
+      @hide="transferOpen = false"
+      :resize-width='{1200:"476",992:"476",768:"90%"}'
+      defaultWidth="476px"
+      :animation-panel="'modal-slide-top'"
+      >
+      <h1 class="wallet-dialog-title">请输入转账信息</h1>
+      <div class="wallet-dialog-content">
+        <LimitInput label="Account to be credited" warn=""/>
+        <LimitInput label="Amount" warn=""/>
+        <LimitInput label="Memo" warn=""/>
+        <button class="transfer-submit">确认转账</button>
+      </div>
     </modal>
   </div>
 </template>
@@ -43,13 +71,15 @@
 <script>
 import modal from '@/components/modal'
 import topBar from '@/components/topBar'
-
+import LimitInput from '@/components/input'
+import IconFont from '@/components/IconFont'
 export default {
   name: 'App',
-  components: { modal, topBar },
+  components: { modal, topBar, LimitInput, IconFont },
   data () {
     return {
-      open: false,
+      chargeOpen: false,
+      transferOpen: false,
       walletList: [{
         name: 'BOS',
         balance: 24222600.0202
@@ -139,6 +169,40 @@ export default {
             color #fff
         > button:last-child
           margin 0
+.wallet-dialog-content
+  font-size 14px
+  padding 33px
+  .copy
+    color #455DE1
+    fobt-size 12px
+    svg
+      width 12px
+      height 12px
+      margin-right 6px
+  .wallet-dialog-content-input-label
+    display flex
+    > span:first-child
+      flex 1
+.wallet-dialog-title
+  font-size 24px
+  font-family PingFangSC-Semibold
+  font-weight 600
+  color rgba(206,35,68,1)
+  padding-left 33px
+.transfer-submit
+  font-size 14px
+  font-weight 600
+  color rgba(255,255,255,1)
+  width 100%
+  margin-top 15px
+  height 40px
+  border-radius 4px
+  background rgba(206,35,68,1)
+  border 0
+  outline none
+  cursor pointer
+  &:hover
+    background-color #c11e3e
 @media screen and (max-width: 768px)
   .wallet-wrapper
     .wallet-content

@@ -20,7 +20,7 @@ export default {
     },
     placeholder: {
       type: String,
-      default: '请输入'
+      default: ''
     },
     warn: {
       type: String,
@@ -87,12 +87,14 @@ export default {
     color #333333
     margin-bottom 8px
   input
-    border 1px solid #D9D5E2
+    border 0
+    border 1px solid #D8D8D8
     height 40px
     width 100%
     padding 0 12px
     outline none
     box-sizing border-box
+    border-radius 2px
   p
     font-size 12px
     color #A8A8A8
