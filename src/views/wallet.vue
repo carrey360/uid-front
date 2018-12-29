@@ -22,7 +22,7 @@
             <b>{{i.balance}}</b>
           </p>
           <div class="wallet-items-btn">
-            <button @click="open = true">充值</button>
+            <button @click="chargeOpen = true">充值</button>
             <button @click="transferOpen = true">转账</button>
             <button>创建主网账户</button>
           </div>
