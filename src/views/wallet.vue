@@ -11,20 +11,22 @@
       </div>
     </div>
     <div class="wallet-content">
-      <div>
+      <div class="wallet-content--layout">
         <div class="wallet-items" v-for="(i, k) in walletList" :key="k">
-          <div class="wallet-items-title">
-            <img width="40" src="../assets/wallet/wallet-icon.jpg" alt="">
-            <span>{{i.name}}</span>
-          </div>
-          <p class="wallet-items-balance">
-            <span>余额：</span>
-            <b>{{i.balance}}</b>
-          </p>
-          <div class="wallet-items-btn">
-            <button @click="chargeOpen = true">充值</button>
-            <button @click="transferOpen = true">转账</button>
-            <button @click="createOpen = true">创建主网账户</button>
+          <div class="wallet-items--box">
+            <div class="wallet-items-title">
+              <img width="40" src="../assets/wallet/wallet-icon.jpg" alt="">
+              <span>{{i.name}}</span>
+            </div>
+            <p class="wallet-items-balance">
+              <span>余额：</span>
+              <b>{{i.balance}}</b>
+            </p>
+            <div class="wallet-items-btn">
+              <button @click="chargeOpen = true">充值</button>
+              <button @click="transferOpen = true">转账</button>
+              <button @click="createOpen = true">创建主网账户</button>
+            </div>
           </div>
         </div>
       </div>
@@ -135,6 +137,7 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .wallet-wrapper
+  min-width 360px
   .wallet-top
     display flex
     max-width 1200px
@@ -157,54 +160,55 @@ export default {
   .wallet-content
     background rgba(250,249,252,1)
     padding-top 40px
-    > div
-      max-width 1200px
+    &--layout
+      max-width 1224px
       margin 0 auto
-    .wallet-items
-      width 284px
-      height 205px
-      background-color #fff
-      box-shadow 4px 8px 20px 0px rgba(41,26,204,0.1)
-      border-radius 6px
-      padding 24px
-      box-sizing border-box
-      display inline-block
-      margin-right 24px
-      margin-bottom 24px
-      .wallet-items-title
-        span
-          font-size 18px
-          font-weight 500px
-          color #333
-          font-weight 500
-          position relative
-          top -10px
-          margin-left 10px
-      .wallet-items-balance
-        margin-top 20px
-        > span, > b
-          font-size 14px
-          font-weight 400
-          color rgba(18,18,18,0.5)
-        > b
-          font-size 18px
-      .wallet-items-btn
-        margin-top 35px
-        > button
-          border-radius 4px
-          border 1px solid rgba(217,213,226,1)
-          padding 5px 12px
-          color #CE2344
-          font-size 12px
-          margin-right 15px
-          cursor pointer
-          outline none
-          &:hover
-            background #CE2344
-            border 1px solid #CE2344
-            color #fff
-        > button:last-child
-          margin 0
+      display flex
+      flex-wrap wrap
+      .wallet-items
+        flex 0 0 33.33333%
+        box-sizing border-box
+        padding 12px
+        &--box
+          background-color #fff
+          box-shadow 4px 8px 20px 0px rgba(41,26,204,0.1)
+          border-radius 6px
+          padding 24px
+          box-sizing border-box
+          .wallet-items-title
+            span
+              font-size 18px
+              font-weight 500px
+              color #333
+              font-weight 500
+              position relative
+              top -10px
+              margin-left 10px
+          .wallet-items-balance
+            margin-top 20px
+            > span, > b
+              font-size 14px
+              font-weight 400
+              color rgba(18,18,18,0.5)
+            > b
+              font-size 18px
+          .wallet-items-btn
+            margin-top 35px
+            > button
+              border-radius 4px
+              border 1px solid rgba(217,213,226,1)
+              padding 5px 12px
+              color #CE2344
+              font-size 12px
+              margin-right 15px
+              cursor pointer
+              outline none
+              &:hover
+                background #CE2344
+                border 1px solid #CE2344
+                color #fff
+            > button:last-child
+              margin 0
 .wallet-dialog-content
   font-size 14px
   padding 33px
@@ -261,9 +265,16 @@ export default {
   margin-top 5px
 .wallet-dialog-content-text
   color rgba(93,66,32,1)
+@media screen and (max-width: 920px)
+  .wallet-wrapper
+    .wallet-content
+      &--layout
+        .wallet-items
+          flex 0 0 50%
 @media screen and (max-width: 768px)
   .wallet-wrapper
     .wallet-content
-      .wallet-items
-        width 100%
+      &--layout
+        .wallet-items
+          flex 0 0 100%
 </style>

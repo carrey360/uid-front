@@ -87,6 +87,7 @@ export default {
 
 <style lang="stylus" scoped>
 .home-warrap
+  min-width 360px
   .head
     width 100%
     height 100%
@@ -123,7 +124,7 @@ export default {
       top 0px
       width 100%
   .dapp-list-content
-    max-width 1200px
+    max-width 1224px
     margin 0 auto
     position relative
     z-index 2
@@ -131,46 +132,48 @@ export default {
       display flex
       flex-wrap wrap
       margin-top 50px
-    li
-      flex 0 0 33.33%
-      margin-top 25px
-      height 230px
-      width 388px
-      >div
-        background rgba(255,255,255,1)
-        box-shadow 4px 8px 20px 0px rgba(41,26,204,0.1)
-        border-radius 6px
-        padding 40px
-        width 288px
-        height 130px
-        .info
-          display flex
-          align-items center
-          color #A8A8A8
-          .img-content
-            height 60px
-            width 60px
-            border-radius 50%
-            margin-right 10px
-            img
+      // margin 0 -12px
+      li
+        flex 0 0 33.33%
+        margin-top 24px
+        padding 12px
+        box-sizing border-box
+        & > div
+          background rgba(255,255,255,1)
+          box-shadow 4px 8px 20px 0px rgba(41,26,204,0.1)
+          border-radius 6px
+          height 230px
+          box-sizing border-box
+          padding 40px
+          cursor pointer
+          .info
+            display flex
+            align-items center
+            color #A8A8A8
+            .img-content
               height 60px
               width 60px
               border-radius 50%
-          .title
-            color #333333
-            font-size 22px
-        .brief
-          margin-top 24px
-          display -webkit-box
-          -webkit-box-orient vertical
-          -webkit-line-clamp 3
-          overflow hidden
-        &:hover
-          transition 0.3s
-          padding 50px
-          border 2px solid #CE2344
-          box-shadow 4px 10px 20px 0px rgba(206,35,68,0.12)
-          transform translate(-10px, -10px)
+              margin-right 10px
+              img
+                height 60px
+                width 60px
+                border-radius 50%
+            .title
+              color #333333
+              font-size 22px
+          .brief
+            margin-top 24px
+            display -webkit-box
+            -webkit-box-orient vertical
+            -webkit-line-clamp 3
+            overflow hidden
+          &:hover
+            transition 0.3s
+            transform scale(1.06)
+            border 2px solid #CE2344
+            box-shadow 4px 10px 20px 0px rgba(206,35,68,0.12)
+            // transform translate(-10px, -10px)
   .bttom
     display flex
     justify-content flex-end
@@ -179,4 +182,16 @@ export default {
     img
       width 65%
       height 300px
+@media screen and (max-width: 920px)
+  .home-warrap
+    .dapp-list-content
+      ul
+        li
+          flex 0 0 50%
+@media screen and (max-width: 768px)
+  .home-warrap
+    .dapp-list-content
+      ul
+        li
+          flex 0 0 100%
 </style>
