@@ -22,16 +22,16 @@
         </dropdown>
       </div>
       <div class="item">
-        <!-- <div><a href="/login">登录</a></div>
-        <div><a href="/register">注册</a></div> -->
-        <div>
+        <div><a href="/login">登录</a></div>
+        <div><a href="/register">注册</a></div>
+        <!-- <div>
           <dropdown :close-on-click="true" :class-name="'dropdown'">
             <template slot="btn"><IconFont class="iconfont" name="icon-earth-" />小明</template>
             <template slot="body">
               <ul><li v-for="item in userList" :key="item.key" @click="userMenuChange(item.key)">{{ item.name }}</li></ul>
             </template>
           </dropdown>
-        </div>
+        </div> -->
         <div style="display: flex;align-items: center;">
           <IconFont class="iconfont" name="icon-earth-" />
           <dropdown :close-on-click="true" :class-name="'dropdown'">
@@ -195,6 +195,8 @@ export default {
         margin-left 10px
         font-weight bold
 @media screen and (max-width: 640px)
+  .topBar
+    padding 0 16px
   .topBar .pc
     display none !important
   .topBar .mobile
