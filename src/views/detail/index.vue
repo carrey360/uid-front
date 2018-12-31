@@ -21,16 +21,16 @@
           <p>xxxxx</p>
         </div>
         <div>
-          <p>开发方</p>
-          <p>xxxx</p>
+          <p>过期时间</p>
+          <p>2012.1.1</p>
         </div>
         <div>
           <p>押金</p>
           <p>1000.00 BOS</p>
         </div>
         <div>
-          <p>过期时间</p>
-          <p>2012.1.1</p>
+          <p>开发方</p>
+          <p>xxxx</p>
         </div>
       </div>
       <div class="button">
@@ -43,22 +43,15 @@
         <ul>
           <li v-for="(item, key) in dataList" :key="key">
             <div>
-              <div class="momey">
-                <div>
-                  <p class="title">总额度</p>
-                  <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
-                </div>
-                <div>
-                  <p class="title">剩余额度</p>
-                  <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
-                </div>
-              </div>
+              <p class="title">总额度</p>
+              <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
             </div>
             <div>
-              <div class="handle">
-                <p class="title">操作</p>
-                <p><span class="button">取消操作</span></p>
-              </div>
+              <p class="title">剩余额度</p>
+              <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
+            </div>
+            <div>
+              <p><span class="button">取消操作</span></p>
             </div>
           </li>
         </ul>
@@ -99,12 +92,12 @@ export default {
       display flex
       margin-top 40px
       .avatar
-        height 140px
-        width 140px
+        height 120px
+        width 120px
         margin-right 40px
         img
-          height 140px
-          width 140px
+          height 120px
+          width 120px
           border-radius 50%
       .dapp-name
         color #333333
@@ -155,9 +148,10 @@ export default {
           box-shadow 2px 4px 10px 0px rgba(41,26,204,0.06)
           border-radius 4px
           background-color #fff
-          padding 24px 48px 24px 24px
+          padding 24px
           display flex
           justify-content space-between
+          align-items center
           margin-bottom 24px
           .title
             color #A8A8A8
@@ -187,4 +181,20 @@ export default {
                 margin-left 10px
             div:first-child
               width 260px
+@media screen and (max-width: 640px)
+  .detail-warrap .head
+    padding 0 16px
+    .info .avatar
+      margin-right 20px
+    .other-info
+      justify-content left
+      flex-wrap wrap
+      margin-top 20px
+      div
+        width 33.33%
+        margin-top 24px
+    .button
+      width 200px
+  .content
+    padding 0 16px
 </style>

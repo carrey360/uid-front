@@ -1,22 +1,13 @@
 <template>
   <div class="home-warrap">
     <div class="head">
-      <img class="top-bg" src="@/assets/home/top.png" />
       <div class="top-bar">
        <topBar :isShowbgc="isShowbgc"></topBar>
       </div>
-      <!-- <div class="middle-content">
-        <div>
-          <div class="left-word">
-            <p>- what wu do</p>
-            <p class="big">Providing the <br/>best customer service</p>
-            <p class="mid">Lorem lpsum is simply dummy text of the printing and <br/>typesetting industry. Lorem lpsum has been.</p>
-          </div>
-          <div class="right-img">
-            <img src="@/assets/dapp.jpeg" />
-          </div>
-        </div>
-      </div> -->
+      <img class="top-bg" src="@/assets/home/top.png" />
+    </div>
+    <div class="access-guide" @click="guide">
+      <span><IconFont class="iconfont" name="icon-tishi" />接入指南</span>
     </div>
     <div class="dapp-list-content">
       <ul>
@@ -42,10 +33,11 @@
 
 <script>
 import topBar from '@/components/topBar'
+import IconFont from '@/components/Iconfont'
 
 export default {
   name: 'home',
-  components: {topBar},
+  components: {topBar, IconFont},
   data () {
     return {
       isShowbgc: false,
@@ -80,6 +72,9 @@ export default {
   methods: {
     toDetail () {
       this.$router.push({path: '/detail'})
+    },
+    guide () {
+      alert(222)
     }
   }
 }
@@ -94,34 +89,20 @@ export default {
     .top-bg
       width 100%
       height 100%
-    .middle-content
-      position absolute
-      left 0
-      right 0
-      max-width 1200px
-      margin 0 auto
-      top 212px
-      padding-left 15%
-      padding-right 15%
-      >div
-        display flex
-        justify-content space-between
-      .left-word
-        color #FFFFFF
-        font-size 20px
-        .big
-          font-size 45px
-          margin 30px 0 45px 0
-        .mid
-          font-size 16px
-      .right-img
-        img
-          height 264px
-          width 480px
     .top-bar
       position absolute
       top 0px
       width 100%
+  .access-guide
+    max-width 1200px
+    margin 0 auto
+    position relative
+    z-index 2
+    text-align right
+    padding-right 50px
+    cursor pointer
+    .iconfont
+      margin-right 10px
   .dapp-list-content
     max-width 1200px
     margin 0 auto
@@ -130,7 +111,7 @@ export default {
     ul
       display flex
       flex-wrap wrap
-      margin-top 50px
+      margin-top 20px
     li
       flex 0 0 33.33%
       margin-top 25px
@@ -179,4 +160,15 @@ export default {
     img
       width 65%
       height 300px
+@media screen and (max-width: 640px)
+  .home-warrap
+    .dapp-list-content
+      ul
+        padding 0 16px
+      li
+        margin-top 0
+        >div
+          width 264px
+    .bttom img
+      height 200px
 </style>

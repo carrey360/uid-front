@@ -195,6 +195,8 @@ export default {
         margin-left 10px
         font-weight bold
 @media screen and (max-width: 640px)
+  .topBar
+    padding 0 16px
   .topBar .pc
     display none !important
   .topBar .mobile
