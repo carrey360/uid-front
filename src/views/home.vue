@@ -101,6 +101,7 @@ export default {
     text-align right
     padding-right 50px
     cursor pointer
+    margin-top -20px
     .iconfont
       margin-right 10px
   .dapp-list-content
@@ -162,6 +163,8 @@ export default {
       height 300px
 @media screen and (max-width: 640px)
   .home-warrap
+    .access-guide
+      padding-right 16px
     .dapp-list-content
       ul
         padding 0 16px
