@@ -6,8 +6,8 @@
       </div>
       <img class="top-bg" src="@/assets/home/top.png" />
     </div>
-    <div class="access-guide" @click="guide">
-      <span><IconFont class="iconfont" name="icon-tishi" />接入指南</span>
+    <div class="access-guide">
+      <span @click="guide"><IconFont class="iconfont" name="icon-tishi" />接入指南</span>
     </div>
     <div class="dapp-list-content">
       <ul>
@@ -100,7 +100,6 @@ export default {
     position relative
     z-index 2
     text-align right
-    padding-right 50px
     cursor pointer
     margin-top -20px
     .iconfont
@@ -113,8 +112,7 @@ export default {
     ul
       display flex
       flex-wrap wrap
-      margin-top 50px
-      // margin 0 -12px
+      margin-top 20px
       li
         flex 0 0 33.33%
         margin-top 24px
@@ -180,13 +178,6 @@ export default {
   .home-warrap
     .access-guide
       padding-right 16px
-    .dapp-list-content
-      ul
-        padding 0 16px
-      li
-        margin-top 0
-        >div
-          width 264px
     .bttom img
       height 200px
 </style>
