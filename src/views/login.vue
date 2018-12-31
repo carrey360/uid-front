@@ -34,27 +34,31 @@ export default {
   data () {
     return {
       styleCircle: {
-        width: '600px',
-        height: '600px'
+        width: '400px',
+        height: '400px'
       },
       disabled: false
     }
   },
   created () {
+    this.formatCircle()
     window.addEventListener('resize', (e) => {
-      if (this.$refs.circleBox) {
-        const { clientWidth } = this.$refs.circleBox
-        if (clientWidth < 900) {
-          let long = clientWidth * 0.6 === 0 ? 600 : clientWidth * 0.6
-          this.styleCircle.width = `${long}px`
-          this.styleCircle.height = `${long}px`
-        }
-      }
+      this.formatCircle()
     }, false)
   },
   methods: {
     handleSubmit () {
       this.disabled = !this.disabled
+    },
+    formatCircle () {
+      if (this.$refs.circleBox) {
+        const { clientWidth } = this.$refs.circleBox
+        if (clientWidth < 600) {
+          let long = clientWidth * 0.6 === 0 ? 600 : clientWidth * 0.6
+          this.styleCircle.width = `${long}px`
+          this.styleCircle.height = `${long}px`
+        }
+      }
     }
   }
 }

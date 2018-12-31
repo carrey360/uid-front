@@ -34,8 +34,8 @@ export default {
   data () {
     return {
       styleCircle: {
-        width: '600px',
-        height: '600px'
+        width: '400px',
+        height: '400px'
       },
       disabled: false
     }
