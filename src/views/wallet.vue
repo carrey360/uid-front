@@ -22,10 +22,14 @@
               <span>余额：</span>
               <b>{{i.balance}}</b>
             </p>
-            <div class="wallet-items-btn">
+            <div class="wallet-items-btn" v-if="i.name != 'BOS'">
               <button @click="chargeOpen = true">充值</button>
               <button @click="transferOpen = true">转账</button>
-              <button @click="createOpen = true">创建主网账户</button>
+            </div>
+            <div class="wallet-items-btn" v-if="i.name == 'BOS'">
+              <button class="three" @click="chargeOpen = true">充值</button>
+              <button class="three" @click="transferOpen = true">转账</button>
+              <button class="three" @click="createOpen = true">创建主网账户</button>
             </div>
           </div>
         </div>
@@ -122,13 +126,13 @@ export default {
         name: 'BOS',
         balance: 24222600.0202
       }, {
-        name: 'BOS',
+        name: 'EOS',
         balance: 24222600.0202
       }, {
-        name: 'BOS',
+        name: 'HPT',
         balance: 24222600.0202
       }, {
-        name: 'BOS',
+        name: 'HT',
         balance: 24222600.0202
       }]
     }
@@ -140,7 +144,7 @@ export default {
   min-width 360px
   .wallet-top
     display flex
-    max-width 1200px
+    max-width 900px
     margin 0 auto
     padding 40px 0
     > div:first-child
@@ -161,7 +165,7 @@ export default {
     background rgba(250,249,252,1)
     padding-top 40px
     &--layout
-      max-width 1224px
+      max-width 900px
       margin 0 auto
       display flex
       flex-wrap wrap
@@ -194,15 +198,19 @@ export default {
               font-size 18px
           .wallet-items-btn
             margin-top 35px
+            display flex
+            justify-content space-between
             > button
               border-radius 4px
               border 1px solid rgba(217,213,226,1)
-              padding 5px 12px
+              padding 5px 32px
               color #CE2344
               font-size 12px
               margin-right 15px
               cursor pointer
               outline none
+              &.three
+                padding 5px 12px
               &:hover
                 background #CE2344
                 border 1px solid #CE2344

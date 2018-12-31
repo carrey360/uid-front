@@ -107,7 +107,6 @@ export default {
   },
   watch: {
     visible (val) {
-      console.log(val)
       if (val) {
         this.isOpen = true
         setTimeout(() => (this.open = true), 30)
@@ -306,6 +305,7 @@ export default {
     padding-top: 5px
     padding-bottom: 10px
     flex-grow: 1
+    width 100%
   }
   .modal-vue-show {
     transform: translate(0, -50%) !important

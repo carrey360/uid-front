@@ -135,7 +135,7 @@ export default {
       font-weight 500
   .auth-info
     background-color #FAF9FC
-    padding-bottom 118px
+    padding-bottom 38px
     .content
       max-width 900px
       margin 0 auto

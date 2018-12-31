@@ -6,7 +6,7 @@
           <a href="/"><img src="@/assets/logo.png"/></a>
         </div>
         <div><a href="/wallet">我的钱包</a></div>
-        <div>导入Keystore</div>
+        <div @click="importKey()">导入Keystore</div>
         <div @click="exportKey()">导出Keystore</div>
       </div>
       <div class="item mobile">
@@ -24,14 +24,14 @@
       <div class="item">
         <div><a href="/login">登录</a></div>
         <div><a href="/register">注册</a></div>
-        <!-- <div>
+        <div>
           <dropdown :close-on-click="true" :class-name="'dropdown'">
             <template slot="btn"><IconFont class="iconfont" name="icon-earth-" />小明</template>
             <template slot="body">
               <ul><li v-for="item in userList" :key="item.key" @click="userMenuChange(item.key)">{{ item.name }}</li></ul>
             </template>
           </dropdown>
-        </div> -->
+        </div>
         <div style="display: flex;align-items: center;">
           <IconFont class="iconfont" name="icon-earth-" />
           <dropdown :close-on-click="true" :class-name="'dropdown'">
@@ -44,14 +44,18 @@
       </div>
     </div>
 
+    <div style="display:none">
+      <input id="upload" type="file" accept=".txt" @change="uploadFile()"/>
+    </div>
+
     <!-- 修改用户信息 -->
-    <modal class="common-dailog" :visible="updateInfoDailog" @hide="updateInfoDailog = false" defaultWidth="470px" :animation-panel="'modal-slide-top'">
+    <modal class="common-dailog" :visible="updateInfoDailog" @hide="updateInfoDailog = false" defaultWidth="320px" :animation-panel="'modal-slide-top'">
       <div class="dialog-content">
         <div class="dailog-cur-user-info" style="margin-bottom: 20px">
           <div class="avatar"><img width="66" src="@/assets/wallet/wallet-icon.jpg" alt=""></div>
           <div>
             <p class="name">小明</p>
-            <p class="sign">如果实现单行文本的溢出显示省略号同学们应该都知道用text-overflow:ellipsis属性来,当然还需要加宽度width属来兼容部</p>
+            <p class="sign">如果实现单行文如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显本的溢出显</p>
           </div>
         </div>
 
@@ -71,14 +75,14 @@
     </modal>
 
     <!-- 导出 -->
-    <modal class="common-dailog" :visible="exportDailog" @hide="exportDailog = false" defaultWidth="400px" :animation-panel="'modal-slide-top'">
+    <modal class="common-dailog" :visible="exportDailog" @hide="exportDailog = false" defaultWidth="320px" :animation-panel="'modal-slide-top'">
       <div class="dialog-content">
         <div class="dialog-title">导出Keystore</div>
         <LimitInput label="密码" warn="请输入密码导出key store进行保存"/>
 
         <div class='dialog-btn'>
           <div class="cancel">取消</div>
-          <div class="submit">导出</div>
+          <div class="submit" @click="exportSubmit()">导出</div>
         </div>
       </div>
     </modal>
@@ -119,6 +123,8 @@ export default {
         this.$router.push({path: '/wallet'})
       } else if (key === 'home') {
         this.$router.push({path: '/'})
+      } else if (key === 'export') {
+        this.exportDailog = true
       }
     },
     userMenuChange (key) {
@@ -128,6 +134,33 @@ export default {
     },
     exportKey () {
       this.exportDailog = true
+    },
+    importKey () {
+      document.getElementById('upload').click()
+    },
+    exportSubmit () {
+      this.downloadFile('aaa1.txt', '这是我下载的文件')
+    },
+    uploadFile (e) {
+      let selectedFile = document.getElementById('upload').files[0]
+      if (!selectedFile) {
+        return
+      }
+      let reader = new FileReader()
+      reader.readAsText(selectedFile)
+      reader.onload = function (oFREvent) {
+        var pointsTxt = oFREvent.target.result
+        console.log(pointsTxt)
+      }
+    },
+    downloadFile (fileName, content) {
+      var element = document.createElement('a')
+      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
+      element.setAttribute('download', fileName)
+      element.style.display = 'none'
+      document.body.appendChild(element)
+      element.click()
+      document.body.removeChild(element)
     }
   }
 }
@@ -194,6 +227,23 @@ export default {
       span
         margin-left 10px
         font-weight bold
+
+.dailog-cur-user-info
+  display flex
+  color #333333
+  font-size 16px
+  font-weight 500
+  align-items center
+  .avatar
+    margin-right 10px
+  .sign
+    color #333333
+    font-size 14px
+    font-weight 400
+    width 200px
+    overflow hidden
+    text-overflow ellipsis
+    white-space nowrap
 @media screen and (max-width: 640px)
   .topBar
     padding 0 16px
