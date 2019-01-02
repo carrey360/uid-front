@@ -64,13 +64,10 @@ export default {
     flex auto
     display flex
     flex-direction column
-    position relative
+    align-items center
+    justify-content center
     .login_left--warpper
       width 380px
-      position absolute
-      top 20%
-      left 50%
-      margin-left -190px
   .login_right
     flex 0 0 61.8%
     background-color rgba(206,35,68,1)
@@ -123,7 +120,7 @@ export default {
     .login_right
       .warn_box
         right 8%
-@media screen and (max-width: 900px)
+@media screen and (max-width: 860px)
   .login-wrapper
     .login_left
       display flex
