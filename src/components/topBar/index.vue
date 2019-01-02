@@ -78,7 +78,7 @@
     <modal class="common-dailog" :visible="exportDailog" @hide="exportDailog = false" defaultWidth="320px" :animation-panel="'modal-slide-top'">
       <div class="dialog-content">
         <div class="dialog-title">导出Keystore</div>
-        <LimitInput label="密码" warn="请输入密码导出key store进行保存"/>
+        <LimitInput v-model="password" label="密码" warn="请输入密码导出key store进行保存"/>
 
         <div class='dialog-btn'>
           <div class="cancel">取消</div>
@@ -95,7 +95,7 @@ import Dropdown from 'bp-vuejs-dropdown'
 import IconFont from '@/components/Iconfont'
 import LimitInput from '@/components/input'
 import modal from '@/components/modal'
-
+import Crypto from '@/utils/crypto'
 export default {
   name: 'topBar',
   components: {Dropdown, IconFont, LimitInput, modal},
@@ -109,6 +109,7 @@ export default {
     return {
       updateInfoDailog: false,
       exportDailog: false,
+      password: '',
       lang: 'EN',
       userList: [{key: 'userinfo', name: '账号信息'}, {key: 'layout', name: '退出'}],
       menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}]
@@ -139,7 +140,10 @@ export default {
       document.getElementById('upload').click()
     },
     exportSubmit () {
-      this.downloadFile('aaa1.txt', '这是我下载的文件')
+      const prikey = '5KiJ5soZL8ewP6uZs3rS89tjSiyeKS1TstabLcZ2SF8TADJw7iN'
+      const Keystore = Crypto.encrypt(prikey, '123')
+      Crypto.decrypt(Keystore, '123')
+      // this.downloadFile('aaa1.txt', '文章内容')
     },
     uploadFile (e) {
       let selectedFile = document.getElementById('upload').files[0]
