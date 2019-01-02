@@ -2,7 +2,7 @@
   <login-layout>
     <h1>Login in</h1>
     <div class="login_form">
-      <LimitInput label="Account" warn="4-8位字符，需包含数字1-5和字母a-z两种元素" />
+      <LimitInput v-model="username" label="Account" warn="4-8位字符，需包含数字1-5和字母a-z两种元素" />
       <LimitInput label="Password" warn="6位字符，需包含数字和字母两种元素" />
       <p class="login_forget">Forget password?</p>
     </div>
@@ -24,7 +24,8 @@ export default {
   components: { LimitInput, LoginLayout },
   data () {
     return {
-      disabled: false
+      disabled: false,
+      username: ''
     }
   },
   methods: {
