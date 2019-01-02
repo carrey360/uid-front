@@ -3,8 +3,7 @@
     <h1>Login in</h1>
     <div class="login_form">
       <LimitInput v-model="username" label="Account" warn="4-8位字符，需包含数字1-5和字母a-z两种元素" />
-      <LimitInput label="Password" warn="6位字符，需包含数字和字母两种元素" />
-      <p class="login_forget">Forget password?</p>
+      <LimitInput v-model="password" label="Password" type="password" warn="6位字符，需包含数字和字母两种元素" />
     </div>
     <button class="transfer-submit" :class="{'btn-disabled': disabled}" @click="handleSubmit">Login in</button>
     <p class="no_acccount">NO EOS ACCOUNT？ <span style="color: #195BDD">REGISTER</span></p>
@@ -25,7 +24,8 @@ export default {
   data () {
     return {
       disabled: false,
-      username: ''
+      username: '',
+      password: ''
     }
   },
   methods: {
