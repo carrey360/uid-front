@@ -24,7 +24,7 @@ export default {
     },
     warn: {
       type: String,
-      default: '4-8位字符，需包含数字1-5和字母a-z两种元素'
+      default: ''
     }
   },
   data () {
