@@ -29,6 +29,7 @@
 <script>
 import LimitInput from '@/components/input'
 import ecc from 'eosjs-ecc'
+import config from '@/utils/config'
 import { transactAction, toApiFormatUserName } from '@/utils/'
 
 export default {
@@ -87,11 +88,11 @@ export default {
           pubkey: publicKey,
           sig: sign
         }
-        console.log(params)
+
         transactAction('signup', params).then(result => {
           if (result && result.transaction_id) {
             window.tip('注册成功')
-            localStorage.setItem(confirm.lsUserPrivateKeyName, privateKey)
+            localStorage.setItem(config.lsUserPrivateKeyName, privateKey)
           } else {
             window.tip('注册失败')
           }
