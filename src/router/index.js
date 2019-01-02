@@ -6,6 +6,7 @@ import Auth from '@/views/auth'
 import Login from '@/views/login'
 import Register from '@/views/register'
 import Wallet from '@/views/wallet'
+import Account from '@/views/account'
 Vue.use(Router)
 
 export default new Router({
@@ -38,6 +39,10 @@ export default new Router({
       path: '/wallet',
       name: 'Wallet',
       component: Wallet
+    }, {
+      path: '/account',
+      name: 'Account',
+      component: Account
     }
   ]
 })

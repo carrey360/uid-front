@@ -237,20 +237,6 @@ export default {
   font-weight 600
   color rgba(206,35,68,1)
   padding-left 33px
-.transfer-submit
-  font-size 14px
-  font-weight 600
-  color rgba(255,255,255,1)
-  width 100%
-  margin-top 15px
-  height 40px
-  border-radius 4px
-  background rgba(206,35,68,1)
-  border 0
-  outline none
-  cursor pointer
-  &:hover
-    background-color #c11e3e
 .wallet-dialog-content-textarea
   border 0
   border 1px solid #D8D8D8

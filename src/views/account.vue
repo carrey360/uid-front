@@ -1,32 +1,43 @@
 <template>
-  <div class="login-wrapper">
-    <div class="login_left">
-      <div class="login_left--warpper">
-        <h1>Login in</h1>
-        <div class="login_form">
-          <LimitInput label="Account" warn="4-8位字符，需包含数字1-5和字母a-z两种元素" />
-          <LimitInput label="Password" warn="6位字符，需包含数字和字母两种元素" />
-          <p class="login_forget">Forget password?</p>
+  <div class="account-wrapper">
+    <div class="account_left">
+      <div class="account_left--warpper">
+        <h1>创建主网账户</h1>
+        <div class="account-content">
+          <LimitInput label="账号" warn="4-8位字符，需包含数字1-5和字母a-z两种元素"/>
+          <div class="account-content-input-label">
+            <span>公钥</span>
+            <span class="copy">生成新公钥</span>
+          </div>
+          <textarea class="account-content-textarea"></textarea>
+          <p class="account-content-input-remark">所有者和使用者公钥相同</p>
+          <br>
+          <div class="account-content-input-label">
+            <span>私钥</span>
+          </div>
+          <textarea class="account-content-textarea"></textarea>
+          <p class="account-content-input-remark-warn">不要透露给任何人</p>
+          <br>
+          <br>
+          <div class="account-content-text">
+            <h4>离线保存</h4>
+            <p>建议抄写或打印私钥后放置在安全地点保存</p>
+            <br>
+            <h4>请勿使用网络传输</h4>
+            <p>请勿通过网络工具传输私钥，例如用微信发送到电脑。一旦被黑 客获取造成不可挽回的资产损失</p>
+          </div>
+          <br>
+          <button class="transfer-submit">创建账号</button>
         </div>
-        <div class="login_line">
-          <span>BetDice请求获取以下权限</span>
-        </div>
-        <div class="login_checkbox">
-          <label><input type="checkbox" name="NAME" value="VALUE">10000.0000BOS</label>
-          <label><input type="checkbox" name="NAME" value="VALUE1">100000.8888DICE</label>
-        </div>
-        <p class="login_warn">24小时内可以从您的账户与各种扣除以下资产，授权后表示您知晓并同意以上请求。</p>
-        <button :class="{disabled: disabled}" @click="handleSubmit">Login in</button>
-        <p class="no_acccount">NO EOS ACCOUNT？ <span style="color: #195BDD">REGISTER</span></p>
       </div>
     </div>
-    <div ref="circleBox" class="login_right">
+    <div ref="circleBox" class="account_right">
       <div class="circle circle_1"></div>
       <div class="circle circle_2" :style="styleCircle"></div>
       <div class="circle circle_3"></div>
       <div class="circle circle_4"></div>
       <div class="warn_box">
-        <h1>Welcome Back</h1>
+        <h1>Welcome</h1>
         <p>Wether you are an expett or a baeginner.EOS is going to</p>
         <p>become the first platform whiche will faster all your needs </p>
         <p>in a simple, easy and intuotive way</p>
@@ -37,7 +48,7 @@
 <script>
 import LimitInput from '@/components/input'
 export default {
-  name: 'Login',
+  name: 'Account',
   components: { LimitInput },
   data () {
     return {
@@ -68,17 +79,17 @@ export default {
 }
 </script>
 <style lang="stylus" scoped>
-.login-wrapper
+.account-wrapper
   display flex
   width 100%
   height 100%
   min-width 360px
-  .login_left
+  .account_left
     flex auto
     display flex
     flex-direction column
     position relative
-    .login_left--warpper
+    .account_left--warpper
       width 380px
       position absolute
       top 20%
@@ -90,69 +101,42 @@ export default {
         margin-bottom 46px
         text-align left
         width 100%
-      .login_form
-        margin-bottom 48px
-        &--item
+      .account-content
+        font-size 14px
+        .copy
+          color #455DE1
+          fobt-size 12px
+          svg
+            width 12px
+            height 12px
+            margin-right 6px
+        .account-content-input-label
           display flex
-          flex-direction column
-          margin-bottom 24px
-          label
-            font-size 14px
-            color #333333
-            margin-bottom 8px
-          input
-            border 1px solid #D9D5E2
-            height 40px
-            width 100%
-            padding 0 12px
-            outline none
-            box-sizing border-box
-          p
-            font-size 12px
-            color #A8A8A8
-            margin-top 10px
-        .login_forget
+          > span:first-child
+            flex 1
+        .account-content-textarea
+          border 0
+          border 1px solid #D8D8D8
+          height 70px
           width 100%
-          text-align right
-          color #195BDD
-          font-size 14px
-          cursor pointer
-    .login_line
-      height 1px
-      background-color #D9D5E2
-      width 100%
-      position relative
-      margin-bottom 24px
-      display flex
-      justify-content center
-      span
-       position absolute
-       top -16px
-       display inline-block
-       padding 6px 20px
-       background #fff
-       font-size 14px
-    .login_checkbox
-      display flex
-      flex-direction column
-      padding-left 30%
-      label
-        margin-bottom 12px
-        font-size 16px
-        color #333333
-        cursor pointer
-        input
-          margin-right 10px
-          width 16px
-          height 16px
-    .login_warn
-      font-size 14px
-      color #5E6875
-      margin-bottom 48px
-    .no_acccount
-      text-align center
-      margin-top 20px
-  .login_right
+          padding 0 12px
+          outline none
+          box-sizing border-box
+          border-radius 2px
+          margin-top 10px
+          &:hover, &:focus
+            border-color #CE2344
+        .account-content-input-remark
+          font-size 12px
+          color #a8a8a8
+          margin-top 5px
+        .account-content-input-remark-warn
+          color #CE2344
+          font-size 12px
+          margin-top 5px
+        .account-content-text
+          color rgba(93,66,32,1)
+  .account_right
     flex 0 0 61.8%
     background-color rgba(206,35,68,1)
     clip-path: polygon(0% 0%, 100% 0%, 100% 100%, 38% 100%)
@@ -200,19 +184,19 @@ export default {
       & > p:nth-child(4)
         text-align right
 @media screen and (max-width: 1200px)
-  .login-wrapper
-    .login_right
+  .account-wrapper
+    .account_right
       .warn_box
         right 8%
 @media screen and (max-width: 800px)
-  .login-wrapper
-    .login_left
+  .account-wrapper
+    .account_left
       display flex
       justify-content center
-      .login_left--warpper
+      .account_left--warpper
         width 80%
         margin 0 auto
         position initial
-    .login_right
+    .account_right
       display none
 </style>
