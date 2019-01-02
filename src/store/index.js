@@ -5,11 +5,19 @@ Vue.use(Vuex)
 
 const store = new Vuex.Store({
   state: {
-    code: ''
+    isLogin: sessionStorage.getItem('uidLogin') || '',
+    userName: sessionStorage.getItem('uidUserName') || ''
   },
   actions: {},
   getters: {},
-  mutations: {}
+  mutations: {
+    'setLoginStatus': (state, data) => {
+      state.isLogin = data.isLogin
+      state.userName = data.userName
+      sessionStorage.setItem('uidLogin', data.isLogin)
+      sessionStorage.setItem('uidUserName', data.userName)
+    }
+  }
 })
 
 export default store

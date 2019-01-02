@@ -18,6 +18,8 @@
 <script>
 import LimitInput from '@/components/input'
 import LoginLayout from '@/components/loginLayout'
+import config from '@/utils/config'
+
 export default {
   name: 'Login',
   components: { LimitInput, LoginLayout },
@@ -30,6 +32,20 @@ export default {
   },
   methods: {
     handleSubmit () {
+      if (!this.username) {
+        window.tip('请输入用户名')
+        return false
+      }
+      if (!this.password) {
+        window.tip('请输入密码')
+        return false
+      }
+      // 此处未完-需要通过key stroe 来验证
+      let userPrivateKey = localStorage.getItem(config.lsUserPrivateKeyName)
+      if (userPrivateKey) {
+        this.$store.commit('setLoginStatus', {isLogin: true, userName: this.username})
+        this.$router.push({path: '/'})
+      }
       this.disabled = !this.disabled
     }
   }

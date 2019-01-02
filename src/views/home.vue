@@ -55,12 +55,9 @@ export default {
   },
   created () {
     let params = {
-      json: true,
       code: config.contractAccount,
       scope: config.contractAccount,
       table: 'dapps',
-      key_type: 'i64',
-      index_position: 0,
       limit: 50
     }
     this.getTableRowsForAjax(params)

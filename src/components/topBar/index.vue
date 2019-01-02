@@ -22,11 +22,11 @@
         </dropdown>
       </div>
       <div class="item">
-        <div><a href="/login">登录</a></div>
-        <div><a href="/register">注册</a></div>
-        <div>
+        <div v-if="!isLogin"><a href="/login">登录</a></div>
+        <div v-if="!isLogin"><a href="/register">注册</a></div>
+        <div v-if="isLogin">
           <dropdown :close-on-click="true" :class-name="'dropdown'">
-            <template slot="btn"><IconFont class="iconfont" name="icon-earth-" />小明</template>
+            <template slot="btn"><IconFont class="iconfont" name="icon-earth-" />{{ userName }}</template>
             <template slot="body">
               <ul><li v-for="item in userList" :key="item.key" @click="userMenuChange(item.key)">{{ item.name }}</li></ul>
             </template>
@@ -111,7 +111,9 @@ export default {
       exportDailog: false,
       lang: 'EN',
       userList: [{key: 'userinfo', name: '账号信息'}, {key: 'layout', name: '退出'}],
-      menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}]
+      menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}],
+      isLogin: this.$store.state.isLogin,
+      userName: this.$store.state.userName
     }
   },
   methods: {

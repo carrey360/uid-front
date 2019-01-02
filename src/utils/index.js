@@ -7,6 +7,20 @@ export function getUUID () {
   return (new Date()).getTime() * 10000 + parseInt((Math.random() * 10000 + 1))
 }
 
+// 解析url参数
+export function getUrlSearch (url) {
+  let uridc = decodeURI(url)
+  let obj = {}
+  if (uridc.indexOf('?') !== -1) {
+    let str = uridc.substr(1)
+    let strs = str.split('&')
+    for (let i = 0; i < strs.length; i++) {
+      obj[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+    }
+  }
+  return obj
+}
+
 // 传到合约需要对用户名处理统一加上 '.uid'
 export function toApiFormatUserName (userName) {
   return userName + '.uid'
@@ -37,7 +51,16 @@ function ajaxPost (url, data, success, error, from = 'getRow') {
   xhr.send(_data)
 }
 
+// 调用get_table_row
 export function getTableRow (params, success, error) {
+  let commParams = {
+    key_type: 'i64',
+    json: true
+  }
+  if (!params.index_position) {
+    commParams.index_position = 0
+  }
+  params = Object.assign(params, commParams)
   let url = config.contractUrl + '/v1/chain/get_table_rows'
 
   ajaxPost(url, params, function (res) {
