@@ -7,6 +7,7 @@ import Login from '@/views/login'
 import Register from '@/views/register'
 import Wallet from '@/views/wallet'
 import Account from '@/views/account'
+import EditorUser from '@/views/editorUser'
 Vue.use(Router)
 
 export default new Router({
@@ -43,6 +44,10 @@ export default new Router({
       path: '/account',
       name: 'Account',
       component: Account
+    }, {
+      path: '/editoruser',
+      name: 'EditorUser',
+      component: EditorUser
     }
   ]
 })
