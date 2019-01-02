@@ -4,11 +4,11 @@
     <div class="head">
       <div class="info">
         <div class="avatar">
-          <img src="https://ss0.baidu.com/6ONWsjip0QIZ8tyhnq/it/u=2895986097,3609514076&fm=173&app=25&f=JPEG?w=600&h=400&s=DBACB7475B8662D2062E5B6D0300E068" />
+          <img :src="dappInfo.logo_url" />
         </div>
         <div>
-          <p class="dapp-name">Parachute</p>
-          <p class="brief">这里是简介，简介最流行去中心化交易所，这里是简介，最流行去中心化交易所，简介简介平行世界是一个基于区块链技术的虚拟世界。这里是简介，简介最流行去中心化交易所，这里是简介，最流行去中心化交易所，简介简介平行世界是一个基于区块链技术的虚拟世界。简介简介平行世界是一个基于区块链技术的虚拟世界。简介简介平行世界是一个基于区块链技术的虚拟世界。</p>
+          <p class="dapp-name">{{ dappInfo.appname }}</p>
+          <p class="brief">{{ dappInfo.desc }}</p>
         </div>
       </div>
       <div class="other-info">
@@ -62,6 +62,8 @@
 
 <script>
 import topBar from '@/components/topBar'
+import config from '@/utils/config'
+import { getTableRow } from '@/utils/'
 
 export default {
   name: 'detail',
@@ -76,7 +78,36 @@ export default {
         totalLimit: 20000,
         surplusLimit: 10000,
         curreny: 'BOS'
-      }]
+      }],
+      dappInfo: {}
+    }
+  },
+  created () {
+    let query = this.$route.query
+    if (query.contract) {
+      this.getTableRowsForAjax(query.contract)
+    }
+  },
+  methods: {
+    getTableRowsForAjax (lowerBound) {
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: config.contractAccount,
+        lower_bound: lowerBound,
+        upper_bound: '',
+        index_position: 1,
+        table: 'dapps',
+        limit: 1
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let row = res.rows[0]
+          if (row.contract === params.lower_bound) {
+            _that.dappInfo = row
+          }
+        }
+      })
     }
   }
 }
