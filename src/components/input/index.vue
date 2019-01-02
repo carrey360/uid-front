@@ -1,7 +1,7 @@
 <template>
   <div class="form-item">
     <label for="">{{label}}</label>
-    <input type="text" :placeholder="placeholder" :value="inputVal" @input="handleInput">
+    <input :type="type" :placeholder="placeholder" :value="inputVal" @input="handleInput">
     <p>{{warn}}</p>
   </div>
 </template>
@@ -17,6 +17,10 @@ export default {
     label: {
       type: String,
       default: ''
+    },
+    type: {
+      type: String,
+      default: 'text'
     },
     placeholder: {
       type: String,
