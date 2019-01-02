@@ -8,7 +8,7 @@
           <LimitInput label="Password" warn="6位字符，需包含数字和字母两种元素" />
           <!-- <p class="login_forget">Forget password?</p> -->
         </div>
-        <button :class="{disabled: disabled}" @click="handleSubmit">Login in</button>
+        <button class="transfer-submit" :class="{'btn-disabled': disabled}" @click="handleSubmit">Login in</button>
         <p class="no_acccount">NO EOS ACCOUNT？ <span style="color: #195BDD">REGISTER</span></p>
       </div>
     </div>
@@ -44,7 +44,14 @@ export default {
   created () {
     this.formatCircle()
     window.addEventListener('resize', (e) => {
-      this.formatCircle()
+      if (this.$refs.circleBox) {
+        const { clientWidth } = this.$refs.circleBox
+        if (clientWidth < 900) {
+          let long = clientWidth * 0.6 === 0 ? 400 : clientWidth * 0.6
+          this.styleCircle.width = `${long}px`
+          this.styleCircle.height = `${long}px`
+        }
+      }
     }, false)
   },
   methods: {
@@ -146,24 +153,8 @@ export default {
       font-size 14px
       color #5E6875
       margin-bottom 48px
-    button
-      background-color #CE2344
-      padding 10px
-      width 100%
-      color #fff
-      font-weight bold
-      cursor pointer
-      margin-bottom 20px
-      border-radius 5px
-      border none
-      outline none
-      &:hover
-        background-color rgba(206, 35, 68, 0.8)
-    button.disabled
-      background-color #E8E5EE
-      pointer-events none
-      cursor default
     .no_acccount
+      margin-top 20px
       text-align center
   .login_right
     flex 0 0 61.8%
