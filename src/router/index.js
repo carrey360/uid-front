@@ -1,5 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store/'
+import crypto from '@/utils/crypto'
+import config from '@/utils/config'
 import Home from '@/views/home'
 import Detail from '@/views/detail/'
 import Auth from '@/views/auth'
@@ -10,7 +13,7 @@ import Account from '@/views/account'
 import EditorUser from '@/views/editorUser'
 Vue.use(Router)
 
-export default new Router({
+let router = new Router({
   mode: 'history',
   scrollBehavior (to, from, savedPosition) {
     return { x: 0, y: 0 }
@@ -51,3 +54,17 @@ export default new Router({
     }
   ]
 })
+router.beforeEach((to, form, next) => {
+  if (store.state.isLogin && !store.state.uidUserPrivateKey) {
+    let keyStore = localStorage.getItem(config.lsUserKeystore)
+    if (keyStore && store.state.lock) {
+      let privateKey = crypto.decrypt(keyStore, store.state.lock)
+      if (privateKey) {
+        store.commit('getUserPrivateKey', privateKey)
+      }
+    }
+  }
+  next()
+})
+
+export default router

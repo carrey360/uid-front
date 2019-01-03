@@ -26,6 +26,12 @@ export function toApiFormatUserName (userName) {
   return userName + '.uid'
 }
 
+// 获取区块链时间，暂时使用本地时间代替
+export function getExpireTime () {
+  let sec = parseInt(new Date().getTime() / 1000) + 100
+  return sec
+}
+
 function ajaxPost (url, data, success, error, from = 'getRow') {
   var _data = JSON.stringify(data)
   var xhr = new XMLHttpRequest()

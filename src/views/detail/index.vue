@@ -4,54 +4,55 @@
     <div class="head">
       <div class="info">
         <div class="avatar">
-          <img :src="dappInfo.logo_url" />
+          <img v-if="dappInfo.logo_url" :src="dappInfo.logo_url"/>
+          <img v-else :src="dappDefaultLogo" />
         </div>
         <div>
           <p class="dapp-name">{{ dappInfo.appname }}</p>
-          <p class="brief">{{ dappInfo.desc }}</p>
+          <p class="brief">{{ dappInfo.brief }}</p>
         </div>
       </div>
       <div class="other-info">
         <div>
-          <p>授权状态</p>
-          <p>已授权</p>
-        </div>
-        <div>
           <p>合约账号</p>
-          <p>xxxxx</p>
-        </div>
-        <div>
-          <p>过期时间</p>
-          <p>2012.1.1</p>
+          <p>{{ dappInfo.contract }}</p>
         </div>
         <div>
           <p>押金</p>
-          <p>1000.00 BOS</p>
+          <p>{{ dappInfo.balance }}</p>
         </div>
         <div>
           <p>开发方</p>
-          <p>xxxx</p>
+          <p>{{ dappInfo.owner }}</p>
+        </div>
+        <div>
+          <p>授权状态</p>
+          <p>{{ authsInfo.authStatus || '--' }}</p>
+        </div>
+        <div>
+          <p>过期时间</p>
+          <p>{{ authsInfo.expire || '--' }}</p>
         </div>
       </div>
       <div class="button">
-        <div>项目方网站</div>
+        <a :href="dappInfo.url" target="_blank"><div>项目方网站</div></a>
       </div>
     </div>
     <div class="auth-info">
       <div class="content">
         <div class="content-title">授权信息</div>
         <ul>
-          <li v-for="(item, key) in dataList" :key="key">
+          <li v-for="(item, key) in authsInfo.credits" :key="key">
             <div>
               <p class="title">总额度</p>
-              <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
+              <p class="number">{{ item.limit }}</p>
             </div>
             <div>
-              <p class="title">剩余额度</p>
-              <p class="number">{{ item.totalLimit }}<span>{{ item.curreny }}</span></p>
+              <p class="title">已用额度</p>
+              <p class="number">{{ item.used }}</p>
             </div>
             <div>
-              <p><span class="button">取消操作</span></p>
+              <p><span class="button" @click="handelCancle(item.limit)">取消操作</span></p>
             </div>
           </li>
         </ul>
@@ -61,31 +62,35 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import topBar from '@/components/topBar'
 import config from '@/utils/config'
-import { getTableRow } from '@/utils/'
+import ecc from 'eosjs-ecc'
+import { getTableRow, toApiFormatUserName, transactAction, getExpireTime } from '@/utils/'
 
 export default {
   name: 'detail',
   components: {topBar},
   data () {
     return {
-      dataList: [{
-        totalLimit: 20000,
-        surplusLimit: 10000,
-        curreny: 'BOS'
-      }, {
-        totalLimit: 20000,
-        surplusLimit: 10000,
-        curreny: 'BOS'
-      }],
-      dappInfo: {}
+      dappDefaultLogo: config.dappDefaultLogo,
+      dappInfo: {},
+      authsInfo: {credits: []},
+      curUserName: this.$store.state.userName,
+      contract: ''
     }
+  },
+  computed: {
+    ...mapState(['uidUserPrivateKey'])
   },
   created () {
     let query = this.$route.query
     if (query.contract) {
       this.getTableRowsForAjax(query.contract)
+      this.contract = query.contract
+      if (this.curUserName) {
+        this.getUserAuthStatus(query.contract)
+      }
     }
   },
   methods: {
@@ -106,6 +111,49 @@ export default {
           if (row.contract === params.lower_bound) {
             _that.dappInfo = row
           }
+        }
+      })
+    },
+    getUserAuthStatus (lowerBound) { // 获取用户授权状态
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: toApiFormatUserName(this.curUserName),
+        lower_bound: lowerBound,
+        upper_bound: '',
+        index_position: 1,
+        table: 'auths',
+        limit: 1
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let row = res.rows[0]
+          _that.authsInfo = {authStatus: '已授权', expire: row.expire, credits: row.credits}
+        } else if (_that.curUserName) {
+          _that.authsInfo = {authStatus: '未授权', expire: '', credits: []}
+        }
+      })
+    },
+    handelCancle (limit) {
+      let limits = limit.replace(/[.0-9 ]/ig, '') // 从总额度中取出币种
+      let expireTime = getExpireTime()
+      let apiUserName = toApiFormatUserName(this.curUserName)
+      let data = `${apiUserName}-${this.contract}-${limits}-${expireTime}`
+      let sig = ecc.sign(data, this.uidUserPrivateKey)
+      let params = {
+        username: apiUserName,
+        contracts: [this.contract],
+        limits: limits,
+        expire_time: expireTime,
+        sig: sig
+      }
+
+      transactAction('signout', params).then(res => {
+        if (res && res.transaction_id) {
+          window.tip('取消授权成功')
+          this.getUserAuthStatus(this.contract)
+        } else {
+          window.tip('取消授权失败')
         }
       })
     }
@@ -161,9 +209,11 @@ export default {
       border-radius 4px
       text-align center
       margin 48px auto
-      font-size 16px
-      color #fff
-      font-weight 500
+      a
+        text-decoration none
+        color #fff
+        font-size 16px
+        font-weight 500
   .auth-info
     background-color #FAF9FC
     padding-bottom 38px

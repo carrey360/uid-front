@@ -28,11 +28,12 @@
   </login-layout>
 </template>
 <script>
+import { mapState } from 'vuex'
+import ecc from 'eosjs-ecc'
 import LoginLayout from '@/components/loginLayout'
 import LimitInput from '@/components/input'
-import ecc from 'eosjs-ecc'
 import config from '@/utils/config'
-import { getUrlSearch, transactAction, getTableRow, toApiFormatUserName } from '@/utils/'
+import { getUrlSearch, transactAction, getTableRow, toApiFormatUserName, getExpireTime } from '@/utils/'
 
 export default {
   name: 'Login',
@@ -46,6 +47,9 @@ export default {
       password: '',
       dappList: []
     }
+  },
+  computed: {
+    ...mapState(['uidUserPrivateKey'])
   },
   created () {
     let search = getUrlSearch(window.location.search)
@@ -92,18 +96,20 @@ export default {
         window.tip('请输入密码')
         return false
       }
-      let sec = parseInt(new Date().getTime() / 1000) + 100
-      let app1 = 'boshbchengli'
-      let app2 = 'huobichengli'
-      let limits = '10.0000 BOS^10.0000 EOS'
-      let expireIn = 100
+      let sec = getExpireTime()
+      let contracts = []
+      this.dappList.map(item => {
+        contracts.push(item.contract)
+      })
+      let limits = this.urlSearch.scope
+      let expireIn = this.urlSearch.expire_in || (24 * 60 * 60) // 默认24小时
       let formatUserName = toApiFormatUserName(this.username)
-      let pubKey = 'EOS62qpLicEiGKaBbC2bpzsibtQkvyEEdupKn2DuuyeDMe8DSeRAX'
-      var data = `${formatUserName}-${app1}-${app2}-${limits}-${expireIn}-${pubKey}-${sec}`
-      let sig = ecc.sign(data, localStorage.getItem('uidUserPrivateKey'))
+      let pubKey = this.urlSearch.pubkey
+      var data = `${formatUserName}-${contracts.join('-')}-${limits}-${expireIn}-${pubKey}-${sec}`
+      let sig = ecc.sign(data, this.uidUserPrivateKey)
       let params = {
         username: formatUserName,
-        contracts: [app1, app2],
+        contracts: contracts,
         limits: limits,
         expire_in: expireIn,
         pubkey: pubKey,
