@@ -135,7 +135,7 @@ export default {
         const fileName = `${toApiFormatUserName(this.userName)}.txt`
         const keystore = localStorage.getItem('uidKeystore')
         if (keystore) {
-          this.downloadFile(fileName, keystore)
+          downloadFile(fileName, keystore)
           this.exportDailog = false
         } else {
           window.tip('登录过期，请重新登录')
