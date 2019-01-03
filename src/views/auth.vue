@@ -3,22 +3,32 @@
     <h1>Login in</h1>
     <div class="login_form">
       <LimitInput v-model="username" label="Account" warn="" />
-      <LimitInput v-model="password" type="password" label="Password" warn="6位字符，需包含数字和字母两种元素" />
+      <LimitInput v-model="password" type="password" label="Password" warn="6位字符，需包含数字和字母两种元素" >
+        <template slot="label-end">
+          <insert-txt title="导入Keystore" />
+        </template>
+      </LimitInput>
     </div>
-    <div class="login_line">
+    <div class="contract—account">
+      合约账号&nbsp;
       <span>
         <a v-for="(item, key) in dappList" :key="key" :href="item.url">
-          {{item.appname}} <i v-show="(key+1) != item.length">,</i>
-        </a>
-        请求获取以下权限
+          {{item.appname}} <i v-if="(key + 1) != dappList.length">、</i>
+        </a>&nbsp;请求获取以下权限
       </span>
     </div>
-    <div class="login_checkbox">
-      <label v-for="(item, key) in currencyList" :key="key"><input type="checkbox" name="NAME" value="VALUE" checked>{{ item }}</label>
+    <div class="login_warn">
+      <label>
+        <input type="checkbox" name="NAME" value="VALUE" checked />
+        <span>
+          24小时内可以从您的账户余额中扣除
+          <label v-for="(item, key) in currencyList" :key="key">{{ item }}<i v-if="(key + 1) != currencyList.length">、</i></label>
+          ，授权后表示您知晓并同意以上请求。
+        </span>
+      </label>
     </div>
-    <p class="login_warn">24小时内可以从您的账户与各种扣除以下资产，授权后表示您知晓并同意以上请求。</p>
     <button :class="{'btn-disabled': disabled}" class="transfer-submit" @click="handleSubmit">Login in</button>
-    <!-- <p class="no_acccount">NO EOS ACCOUNT？ <span style="color: #195BDD">REGISTER</span></p> -->
+    <p class="no_acccount">还没有账号？ <span style="color: #195BDD" @click="goRegister">注册</span></p>
     <template slot="title">
       <p class="title">Welcome Back</p>
       <p>Wether you are an expett or a baeginner.EOS is going to</p>
@@ -32,12 +42,14 @@ import { mapState } from 'vuex'
 import ecc from 'eosjs-ecc'
 import LoginLayout from '@/components/loginLayout'
 import LimitInput from '@/components/input'
+import insertTxt from '@/components/insert'
 import config from '@/utils/config'
+import Crypto from '@/utils/crypto'
 import { getUrlSearch, transactAction, getTableRow, toApiFormatUserName, getExpireTime } from '@/utils/'
 
 export default {
   name: 'Login',
-  components: { LimitInput, LoginLayout },
+  components: { LimitInput, LoginLayout, insertTxt },
   data () {
     return {
       disabled: false,
@@ -96,17 +108,61 @@ export default {
         window.tip('请输入密码')
         return false
       }
+      const userKeystore = localStorage.getItem(config.lsUserKeystore)
+      if (!userKeystore) {
+        window.tip('请导入您的keystore')
+        return false
+      }
+      try {
+        const privateKey = Crypto.decrypt(userKeystore, this.password)
+        const publicKey = ecc.privateToPublic(privateKey)
+        // 通过uid获取通过用户私钥
+        this.getTableRowsForLogin(toApiFormatUserName(this.username), publicKey, privateKey)
+      } catch (error) {
+        window.tip('用户名或密码错误')
+        this.disabled = !this.disabled
+        return false
+      }
+      this.disabled = !this.disabled
+    },
+    getTableRowsForLogin (lowerBound, publicKey, privateKey) {
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: config.contractAccount,
+        lower_bound: lowerBound,
+        upper_bound: '',
+        index_position: 1,
+        table: 'users',
+        limit: 1
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let row = res.rows[0]
+          if (row.username === params.lower_bound) {
+            if (publicKey === row.pubkey) {
+              _that.signin(privateKey)
+            }
+          } else {
+            window.tip('用户名或密码错误')
+            return false
+          }
+        }
+      })
+    },
+    signin (privateKey) {
       let sec = getExpireTime()
+      let _that = this
       let contracts = []
       this.dappList.map(item => {
         contracts.push(item.contract)
       })
       let limits = this.urlSearch.scope
-      let expireIn = this.urlSearch.expire_in || (24 * 60 * 60) // 默认24小时
+      let expireIn = +this.urlSearch.expire_in || (24 * 60 * 60) // 默认24小时
       let formatUserName = toApiFormatUserName(this.username)
       let pubKey = this.urlSearch.pubkey
       var data = `${formatUserName}-${contracts.join('-')}-${limits}-${expireIn}-${pubKey}-${sec}`
-      let sig = ecc.sign(data, this.uidUserPrivateKey)
+      let sig = ecc.sign(data, privateKey)
       let params = {
         username: formatUserName,
         contracts: contracts,
@@ -119,11 +175,20 @@ export default {
       transactAction('signin', params).then(res => {
         if (res && res.transaction_id) {
           window.tip('授权成功')
+          // #error=0&username=xxx&scope=xxx&state=xxx
+          setTimeout(() => {
+            window.location.href = `${_that.urlSearch.redirect_uri}#error=0&username=${_that.username}&scope=${_that.urlSearch.scope}&state=${_that.urlSearch.state}`
+          }, 2000)
         } else {
           window.tip('授权失败')
+          setTimeout(() => {
+            window.location.href = `${_that.urlSearch.redirect_uri}#error=access_denied`
+          }, 2000)
         }
       })
-      this.disabled = !this.disabled
+    },
+    goRegister () {
+      this.$router.push({path: '/register'})
     }
   }
 }
@@ -143,21 +208,14 @@ h1
   color #195BDD
   font-size 14px
   cursor pointer
-.login_line
-  height 1px
-  background-color #D9D5E2
-  width 100%
-  position relative
+.contract—account
+  color #333333
+  font-size 14px
+  font-weight 500
   margin-bottom 24px
-  display flex
-  justify-content center
-  span
-    position absolute
-    top -16px
-    display inline-block
-    padding 6px 20px
-    background #fff
-    font-size 14px
+  a
+    text-decoration none
+    color #455DE1
 .login_checkbox
   display flex
   flex-direction column
@@ -175,6 +233,9 @@ h1
   font-size 14px
   color #5E6875
   margin-bottom 48px
+  display flex
+  input
+    margin-right 10px
 .no_acccount
   text-align center
   margin-top 20px
