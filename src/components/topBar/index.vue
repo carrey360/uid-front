@@ -6,7 +6,7 @@
           <a href="/"><img src="@/assets/logo.png"/></a>
         </div>
         <div v-if="isLogin"><a href="/wallet">我的钱包</a></div>
-        <insert-txt title="导入Keystore" />
+        <insert-txt v-if="!isLogin" title="导入Keystore" />
         <div v-if="isLogin" @click="exportKey()">导出Keystore</div>
       </div>
       <div class="item mobile">
@@ -83,7 +83,7 @@ import IconFont from '@/components/Iconfont'
 import LimitInput from '@/components/input'
 import modal from '@/components/modal'
 import insertTxt from '@/components/insert'
-import { toApiFormatUserName } from '@/utils'
+import { toApiFormatUserName, downloadFile } from '@/utils'
 import { mapState } from 'vuex'
 export default {
   name: 'topBar',
