@@ -11,7 +11,7 @@ import { getUrlSearch } from '@/utils/'
 export default {
   data () {
     return {
-      client_id: 'huobichengli^boshbchengli',
+      client_id: 'huobichengli',
       redirect_uri: location.href,
       scope: '1.0000 BOS^10.0000 EOS',
       expire_in: 24 * 60 * 60,

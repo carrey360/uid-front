@@ -33,9 +33,10 @@
 </template>
 
 <script>
+import { mapState } from 'vuex'
 import topBar from '@/components/topBar'
 import IconFont from '@/components/Iconfont'
-import { getTableRow } from '@/utils/'
+import { getTableRow, toApiFormatUserName } from '@/utils/'
 import config from '@/utils/config'
 
 export default {
@@ -47,6 +48,9 @@ export default {
       dappDefaultLogo: config.dappDefaultLogo,
       dappList: []
     }
+  },
+  computed: {
+    ...mapState(['isLogin', 'userName'])
   },
   created () {
     let params = {
@@ -68,8 +72,38 @@ export default {
     },
     handleResponse (response) {
       if (response.rows) {
-        this.dappList = response.rows
+        if (this.userName) {
+          this.getUserAuthStatus(response.rows)
+        } else {
+          this.dappList = response.rows
+        }
       }
+    },
+    getUserAuthStatus (dappList) { // 获取用户授权状态
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: toApiFormatUserName(this.userName),
+        index_position: 1,
+        table: 'auths',
+        limit: 50
+      }
+      getTableRow(params, function (res) {
+        let resultList = []
+        if (res.rows && res.rows.length > 0) {
+          resultList = res.rows
+        }
+        dappList.map(item => {
+          let someFlag = resultList.some(d => d.contract === item.contract)
+          if (someFlag) {
+            item.auth = '已授权'
+          } else {
+            item.auth = '未授权'
+          }
+          return item
+        })
+        _that.dappList = dappList
+      })
     },
     toDetail (dappInfo) {
       this.$router.push({path: '/detail', query: {contract: dappInfo.contract}})
