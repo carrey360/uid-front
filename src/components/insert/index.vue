@@ -29,6 +29,7 @@ export default {
       reader.readAsText(selectedFile)
       reader.onload = function (oFREvent) {
         var pointsTxt = oFREvent.target.result
+        window.tip('导入成功')
         localStorage.setItem(config.lsUserKeystore, pointsTxt)
       }
     }

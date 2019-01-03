@@ -11,6 +11,7 @@ import Register from '@/views/register'
 import Wallet from '@/views/wallet'
 import Account from '@/views/account'
 import EditorUser from '@/views/editorUser'
+import Guide from '@/views/guide'
 import Test from '@/views/test'
 Vue.use(Router)
 
@@ -56,6 +57,10 @@ let router = new Router({
       path: '/test',
       name: 'Test',
       component: Test
+    }, {
+      path: '/guide',
+      name: 'Guide',
+      component: Guide
     }
   ]
 })

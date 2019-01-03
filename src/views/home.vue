@@ -20,7 +20,7 @@
               </div>
               <div>
                 <p class="title">{{item.appname}}</p>
-                <p class="auth">授权状态：{{item.auth || '--'}}</p>
+                <p class="auth" v-if="item.auth">授权状态：{{item.auth}}</p>
               </div>
             </div>
             <div class="brief">{{item.brief}}</div>
@@ -75,7 +75,7 @@ export default {
       this.$router.push({path: '/detail', query: {contract: dappInfo.contract}})
     },
     guide () {
-      alert(222)
+      this.$router.push({path: '/guide'})
     }
   }
 }

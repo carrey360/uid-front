@@ -38,7 +38,7 @@
         <a :href="dappInfo.url" target="_blank"><div>项目方网站</div></a>
       </div>
     </div>
-    <div class="auth-info">
+    <div v-if="authsInfo.credits.length > 0" class="auth-info">
       <div class="content">
         <div class="content-title">授权信息</div>
         <ul>
