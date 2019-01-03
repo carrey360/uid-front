@@ -7,7 +7,6 @@
       <LimitInput v-model="configPassword" type="password" label="Confirm Password" />
     </div>
     <button class="transfer-submit" :class="{'btn-disabled': disabled}" @click="handleSubmit">Submit</button>
-    <p class="no_acccount">NO EOS ACCOUNT？ <span style="color: #195BDD">REGISTER</span></p>
     <template slot="title">
       <p class="title">Welcome Back</p>
       <p>Wether you are an expett or a baeginner.EOS is going to</p>
@@ -21,7 +20,7 @@ import LimitInput from '@/components/input'
 import LoginLayout from '@/components/loginLayout'
 import ecc from 'eosjs-ecc'
 import config from '@/utils/config'
-import { transactAction, toApiFormatUserName } from '@/utils/'
+import { transactAction, toApiFormatUserName, downloadFile } from '@/utils/'
 import Crypto from '@/utils/crypto'
 
 export default {
@@ -37,6 +36,7 @@ export default {
   },
   methods: {
     handleSubmit () {
+      // todo 密码位数验证还需补充
       if (!this.username) {
         window.tip('请输入用户名')
         return false
@@ -66,18 +66,21 @@ export default {
           pubkey: publicKey,
           sig: sign
         }
-
         transactAction('signup', params).then(result => {
           if (result && result.transaction_id) {
             window.tip('注册成功')
             const keyStote = Crypto.encrypt(privateKey, this.password)
-            console.log(keyStote, 'keyStote')
             localStorage.setItem(config.lsUserKeystore, keyStote)
+            downloadFile(`${params.username}.txt`, keyStote)
+            this.$router.push({path: '/login'})
           } else {
             window.tip('注册失败')
           }
         })
       })
+    },
+    handleRegister () {
+      this.$router.path({path: '/register'})
     }
   }
 }

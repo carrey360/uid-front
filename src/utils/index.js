@@ -57,6 +57,17 @@ function ajaxPost (url, data, success, error, from = 'getRow') {
   xhr.send(_data)
 }
 
+// 下载文件
+export function downloadFile (fileName, content) {
+  const element = document.createElement('a')
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
+  element.setAttribute('download', fileName)
+  element.style.display = 'none'
+  document.body.appendChild(element)
+  element.click()
+  document.body.removeChild(element)
+}
+
 // 调用get_table_row
 export function getTableRow (params, success, error) {
   let commParams = {

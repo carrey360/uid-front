@@ -5,9 +5,9 @@
         <div class="logo">
           <a href="/"><img src="@/assets/logo.png"/></a>
         </div>
-        <div><a href="/wallet">我的钱包</a></div>
-        <div @click="importKey()">导入Keystore</div>
-        <div @click="exportKey()">导出Keystore</div>
+        <div v-if="isLogin"><a href="/wallet">我的钱包</a></div>
+        <insert-txt title="导入Keystore" />
+        <div v-if="isLogin" @click="exportKey()">导出Keystore</div>
       </div>
       <div class="item mobile">
         <dropdown :close-on-click="true" :class-name="'dropdown'">
@@ -43,13 +43,8 @@
         </div>
       </div>
     </div>
-
-    <div style="display:none">
-      <input id="upload" type="file" accept=".txt" @change="uploadFile()"/>
-    </div>
-
     <!-- 修改用户信息 -->
-    <modal class="common-dailog" :visible="updateInfoDailog" @hide="updateInfoDailog = false" defaultWidth="320px" :animation-panel="'modal-slide-top'">
+    <modal class="common-dailog" :visible="updateInfoDailog" @hide="updateInfoDailog = false" defaultWidth="420px" :animation-panel="'modal-slide-top'">
       <div class="dialog-content">
         <div class="dailog-cur-user-info" style="margin-bottom: 20px">
           <div class="avatar"><img width="66" src="@/assets/wallet/wallet-icon.jpg" alt=""></div>
@@ -58,35 +53,27 @@
             <p class="sign">如果实现单行文如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显如果实现单行文本的溢出显本的溢出显</p>
           </div>
         </div>
-
         <LimitInput label="用户名" warn="4-8位字符，需包含数字1-5和字母a-z两种元素"/>
-
         <LimitInput label="头像" warn=""/>
-
         <LimitInput label="性别" warn=""/>
-
         <LimitInput label="签名" warn=""/>
-
         <div class='dialog-btn'>
           <div class="cancel">取消</div>
           <div class="submit">创建账号</div>
         </div>
       </div>
     </modal>
-
     <!-- 导出 -->
     <modal class="common-dailog" :visible="exportDailog" @hide="exportDailog = false" defaultWidth="320px" :animation-panel="'modal-slide-top'">
       <div class="dialog-content">
         <div class="dialog-title">导出Keystore</div>
-        <LimitInput v-model="password" label="密码" warn="请输入密码导出key store进行保存"/>
-
+        <LimitInput v-model="password" type="password" label="密码" warn="请输入密码导出key store进行保存"/>
         <div class='dialog-btn'>
-          <div class="cancel">取消</div>
+          <div class="cancel" @click="exportDailog = false">取消</div>
           <div class="submit" @click="exportSubmit()">导出</div>
         </div>
       </div>
     </modal>
-
   </div>
 </template>
 
@@ -95,11 +82,12 @@ import Dropdown from 'bp-vuejs-dropdown'
 import IconFont from '@/components/Iconfont'
 import LimitInput from '@/components/input'
 import modal from '@/components/modal'
-// import Crypto from '@/utils/crypto'
+import insertTxt from '@/components/insert'
+import { toApiFormatUserName } from '@/utils'
 import { mapState } from 'vuex'
 export default {
   name: 'topBar',
-  components: {Dropdown, IconFont, LimitInput, modal},
+  components: {Dropdown, IconFont, LimitInput, modal, insertTxt},
   props: {
     isShowbgc: {
       type: Boolean,
@@ -113,12 +101,11 @@ export default {
       password: '',
       lang: 'EN',
       userList: [{key: 'userinfo', name: '账号信息'}, {key: 'logout', name: '退出'}],
-      menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}],
-      userName: this.$store.state.userName
+      menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}]
     }
   },
   computed: {
-    ...mapState(['isLogin'])
+    ...mapState(['isLogin', 'userName', 'lock'])
   },
   methods: {
     langChange (lang) {
@@ -143,34 +130,19 @@ export default {
     exportKey () {
       this.exportDailog = true
     },
-    importKey () {
-      document.getElementById('upload').click()
-    },
     exportSubmit () {
-      // const prikey = '5JSnh4zY91ctNYzeQFvaQjVejkJtqYcEus2AcTyQzzirEp1MkxR'
-      // const Keystore = Crypto.encrypt(prikey, '12356')
-      this.downloadFile('aaa1.txt', '文章内容')
-    },
-    uploadFile (e) {
-      let selectedFile = document.getElementById('upload').files[0]
-      if (!selectedFile) {
-        return
+      if (this.password === this.lock) {
+        const fileName = `${toApiFormatUserName(this.userName)}.txt`
+        const keystore = localStorage.getItem('uidKeystore')
+        if (keystore) {
+          this.downloadFile(fileName, keystore)
+          this.exportDailog = false
+        } else {
+          window.tip('登录过期，请重新登录')
+        }
+      } else {
+        window.tip('您的密码不正确')
       }
-      let reader = new FileReader()
-      reader.readAsText(selectedFile)
-      reader.onload = function (oFREvent) {
-        var pointsTxt = oFREvent.target.result
-        console.log(pointsTxt)
-      }
-    },
-    downloadFile (fileName, content) {
-      var element = document.createElement('a')
-      element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content))
-      element.setAttribute('download', fileName)
-      element.style.display = 'none'
-      document.body.appendChild(element)
-      element.click()
-      document.body.removeChild(element)
     }
   }
 }

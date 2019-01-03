@@ -1,7 +1,10 @@
 <template>
   <div class="form-item">
-    <label for="">{{label}}</label>
-    <input autocomplete="off" :type="type" :placeholder="placeholder" :value="inputVal" @input="handleInput">
+    <div class="lablel">
+      <label for="">{{label}}</label>
+      <slot name="label-end"></slot>
+    </div>
+    <input autocomplete="new-password" :type="type" :placeholder="placeholder" :value="inputVal" @input="handleInput">
     <p>{{warn}}</p>
   </div>
 </template>
@@ -43,7 +46,12 @@ export default {
     limit (val, oVal) {
       if (this.numberType === 'nolimit') return val
       if (!val) return
-      if (this.numberType === 'string') {
+      if (this.type === 'password') {
+        let reg = /^.{0,20}$/ // 密码8-20
+        if (!reg.test(val)) {
+          val = oVal
+        }
+      } else if (this.numberType === 'string') {
         let reg = /^[a-z1-5.]{0,12}$/ // 数字1-5 字符a-z大小写 最多12位
         if (!reg.test(val)) {
           val = oVal
@@ -86,10 +94,13 @@ export default {
   display flex
   flex-direction column
   margin-bottom 24px
-  label
-    font-size 14px
-    color #333333
+  .lablel
     margin-bottom 8px
+    display flex
+    justify-content space-between
+    label
+      font-size 14px
+      color #333333
   input
     border 0
     border 1px solid #D8D8D8

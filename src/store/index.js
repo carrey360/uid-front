@@ -8,7 +8,7 @@ const store = new Vuex.Store({
     isLogin: sessionStorage.getItem('uidLogin') || '',
     userName: sessionStorage.getItem('uidUserName') || '',
     uidUserPrivateKey: '', // 存取用户的私钥
-    lock: ''
+    lock: sessionStorage.getItem('lock') || ''
   },
   actions: {},
   getters: {},
