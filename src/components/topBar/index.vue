@@ -95,7 +95,8 @@ import Dropdown from 'bp-vuejs-dropdown'
 import IconFont from '@/components/Iconfont'
 import LimitInput from '@/components/input'
 import modal from '@/components/modal'
-import Crypto from '@/utils/crypto'
+// import Crypto from '@/utils/crypto'
+import { mapState } from 'vuex'
 export default {
   name: 'topBar',
   components: {Dropdown, IconFont, LimitInput, modal},
@@ -111,11 +112,13 @@ export default {
       exportDailog: false,
       password: '',
       lang: 'EN',
-      userList: [{key: 'userinfo', name: '账号信息'}, {key: 'layout', name: '退出'}],
+      userList: [{key: 'userinfo', name: '账号信息'}, {key: 'logout', name: '退出'}],
       menuList: [{key: 'home', name: '首页'}, {key: 'wallet', name: '我的钱包'}, {key: 'import', name: '导入Keystore'}, {key: 'export', name: '导出Keystore'}],
-      isLogin: this.$store.state.isLogin,
       userName: this.$store.state.userName
     }
+  },
+  computed: {
+    ...mapState(['isLogin'])
   },
   methods: {
     langChange (lang) {
@@ -133,6 +136,8 @@ export default {
     userMenuChange (key) {
       if (key === 'userinfo') {
         this.updateInfoDailog = true
+      } else if (key === 'logout') {
+        this.$store.commit('setLoginStatus', {isLogin: '', userName: '', lock: ''})
       }
     },
     exportKey () {
@@ -142,10 +147,9 @@ export default {
       document.getElementById('upload').click()
     },
     exportSubmit () {
-      const prikey = '5KiJ5soZL8ewP6uZs3rS89tjSiyeKS1TstabLcZ2SF8TADJw7iN'
-      const Keystore = Crypto.encrypt(prikey, '123')
-      Crypto.decrypt(Keystore, '123')
-      // this.downloadFile('aaa1.txt', '文章内容')
+      // const prikey = '5JSnh4zY91ctNYzeQFvaQjVejkJtqYcEus2AcTyQzzirEp1MkxR'
+      // const Keystore = Crypto.encrypt(prikey, '12356')
+      this.downloadFile('aaa1.txt', '文章内容')
     },
     uploadFile (e) {
       let selectedFile = document.getElementById('upload').files[0]

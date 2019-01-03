@@ -22,6 +22,7 @@ import LoginLayout from '@/components/loginLayout'
 import ecc from 'eosjs-ecc'
 import config from '@/utils/config'
 import { transactAction, toApiFormatUserName } from '@/utils/'
+import Crypto from '@/utils/crypto'
 
 export default {
   name: 'sogin-in',
@@ -56,6 +57,8 @@ export default {
       this.disabled = !this.disabled
       ecc.randomKey().then(privateKey => {
         let publicKey = ecc.privateToPublic(privateKey)
+        console.log('注册私钥', privateKey)
+        console.log('注册公钥', publicKey)
         let formatUserName = toApiFormatUserName(this.username)
         let sign = ecc.sign(formatUserName, privateKey)
         let params = {
@@ -67,7 +70,9 @@ export default {
         transactAction('signup', params).then(result => {
           if (result && result.transaction_id) {
             window.tip('注册成功')
-            localStorage.setItem(config.lsUserPrivateKeyName, privateKey)
+            const keyStote = Crypto.encrypt(privateKey, this.password)
+            console.log(keyStote, 'keyStote')
+            localStorage.setItem(config.lsUserKeystore, keyStote)
           } else {
             window.tip('注册失败')
           }

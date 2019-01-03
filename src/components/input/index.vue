@@ -1,7 +1,7 @@
 <template>
   <div class="form-item">
     <label for="">{{label}}</label>
-    <input :type="type" :placeholder="placeholder" :value="inputVal" @input="handleInput">
+    <input autocomplete="off" :type="type" :placeholder="placeholder" :value="inputVal" @input="handleInput">
     <p>{{warn}}</p>
   </div>
 </template>
