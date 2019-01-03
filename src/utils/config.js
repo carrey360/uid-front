@@ -1,5 +1,6 @@
 
 let contractUrl = 'http://172.18.12.23:8888'
+// let contractUrl = 'https://api.test.uid.red'
 let chainId = '33cc2426f1b258ef8c798c34c0360b31732ea27a2d7e35a65797850a86d1ba85'
 let keyProvider = '5KEk58bZuNvjvvPhnkHeCWf5ZQrvBjkNE9W9CFu17qfrwneHfxp'
 let transactActor = 'boshuobinode'

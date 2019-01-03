@@ -9,7 +9,7 @@
         </div>
         <div>
           <p class="dapp-name">{{ dappInfo.appname }}</p>
-          <p class="brief">{{ dappInfo.brief }}</p>
+          <p class="brief">{{ dappInfo.desc }}</p>
         </div>
       </div>
       <div class="other-info">

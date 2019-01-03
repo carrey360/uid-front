@@ -1,6 +1,6 @@
 <template>
   <login-layout>
-    <h1>Login in</h1>
+    <h1>登录</h1>
     <div class="login_form">
       <LimitInput v-model="username" label="Account" warn="4-8位字符，需包含数字1-5和字母a-z两种元素" />
       <LimitInput v-model="password" label="Password" type="password" warn="6位字符，需包含数字和字母两种元素">
@@ -85,6 +85,8 @@ export default {
               _that.$store.commit('setLoginStatus', {isLogin: true, userName: row.nickname, lock: _that.password})
               _that.$router.push({path: '/'})
               _that.disabled = !_that.disabled
+            } else {
+              window.tip('登陆用户和导入的keystore内容不一致')
             }
           } else {
             window.tip('用户名或密码错误')

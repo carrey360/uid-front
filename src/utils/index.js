@@ -1,6 +1,7 @@
 // import Clipboard from 'clipboard'
 import config from './config'
 import Eos from 'eosjs'
+import ecc from 'eosjs-ecc'
 
 // 生成UUID
 export function getUUID () {
@@ -98,4 +99,41 @@ export function transactAction (actionApi, params) {
     }]
   })
   return result
+}
+
+export function signinTools (urlSearch, privateKey, dappList, username) {
+  let sec = getExpireTime()
+  let contracts = []
+  dappList.map(item => {
+    contracts.push(item.contract)
+  })
+  let limits = urlSearch.scope
+  let expireIn = +urlSearch.expire_in || (24 * 60 * 60) // 默认24小时
+  let formatUserName = toApiFormatUserName(username)
+  let pubKey = urlSearch.pubkey
+  var data = `${formatUserName}-${contracts.join('-')}-${limits}-${expireIn}-${pubKey}-${sec}`
+  let sig = ecc.sign(data, privateKey)
+  let params = {
+    username: formatUserName,
+    contracts: contracts,
+    limits: limits,
+    expire_in: expireIn,
+    pubkey: pubKey,
+    expire_time: sec,
+    sig: sig
+  }
+  transactAction('signin', params).then(res => {
+    if (res && res.transaction_id) {
+      window.tip('授权成功')
+      // #error=0&username=xxx&scope=xxx&state=xxx
+      setTimeout(() => {
+        window.location.href = `${urlSearch.redirect_uri}#error=0&username=${username}&scope=${urlSearch.scope}&state=${urlSearch.state}`
+      }, 2000)
+    } else {
+      window.tip('授权失败')
+      setTimeout(() => {
+        window.location.href = `${urlSearch.redirect_uri}#error=access_denied`
+      }, 2000)
+    }
+  })
 }

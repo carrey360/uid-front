@@ -1,9 +1,9 @@
 <template>
   <login-layout>
-    <h1>Login in</h1>
+    <h1>第三方登录</h1>
     <div class="login_form">
       <LimitInput v-model="username" label="Account" warn="" />
-      <LimitInput v-model="password" type="password" label="Password" warn="6位字符，需包含数字和字母两种元素" >
+      <LimitInput v-model="password" type="password" label="Password" warn="" >
         <template slot="label-end">
           <insert-txt title="导入Keystore" />
         </template>
@@ -45,7 +45,7 @@ import LimitInput from '@/components/input'
 import insertTxt from '@/components/insert'
 import config from '@/utils/config'
 import Crypto from '@/utils/crypto'
-import { getUrlSearch, transactAction, getTableRow, toApiFormatUserName, getExpireTime } from '@/utils/'
+import { getUrlSearch, transactAction, getTableRow, toApiFormatUserName, getExpireTime, signinTools } from '@/utils/'
 
 export default {
   name: 'Login',
@@ -94,7 +94,11 @@ export default {
         if (res.rows && res.rows.length > 0) {
           let row = res.rows[0]
           if (row.contract === params.lower_bound) {
-            _that.dappList.push(row)
+            let info = {
+              appname: row.appname,
+              contract: row.contract
+            }
+            _that.dappList.push(info)
           }
         }
       })
@@ -141,7 +145,8 @@ export default {
           let row = res.rows[0]
           if (row.username === params.lower_bound) {
             if (publicKey === row.pubkey) {
-              _that.signin(privateKey)
+              // _that.signin(privateKey)
+              signinTools(_that.urlSearch, privateKey, _that.dappList, _that.username)
             }
           } else {
             window.tip('用户名或密码错误')
@@ -188,7 +193,12 @@ export default {
       })
     },
     goRegister () {
-      this.$router.push({path: '/register'})
+      let search = location.search + '&dappList=' + JSON.stringify(this.dappList)
+
+      let url = location.protocol + '//' + location.hostname + ':' + location.port + '/register?' + search
+      location.href = encodeURI(decodeURI(url))
+
+      // this.$router.push({path: '/register', query: {query: search}})
     }
   }
 }
@@ -235,7 +245,7 @@ h1
   margin-bottom 48px
   display flex
   input
-    margin-right 10px
+    margin-right 5px
 .no_acccount
   text-align center
   margin-top 20px
