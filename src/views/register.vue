@@ -72,7 +72,8 @@ export default {
             const keyStote = Crypto.encrypt(privateKey, this.password)
             localStorage.setItem(config.lsUserKeystore, keyStote)
             downloadFile(`${params.username}.txt`, keyStote)
-            this.$router.push({path: '/login'})
+            this.$store.commit('setLoginStatus', {isLogin: true, userName: this.username, lock: this.password})
+            this.$router.push({path: '/'})
           } else {
             window.tip('注册失败')
           }
