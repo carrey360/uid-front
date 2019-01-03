@@ -19,6 +19,9 @@
 import LimitInput from '@/components/input'
 import LoginLayout from '@/components/loginLayout'
 import config from '@/utils/config'
+import Crypto from '@/utils/crypto'
+import { getTableRow, toApiFormatUserName } from '@/utils'
+import ecc from 'eosjs-ecc'
 
 export default {
   name: 'Login',
@@ -40,13 +43,49 @@ export default {
         window.tip('请输入密码')
         return false
       }
-      // 此处未完-需要通过key stroe 来验证
-      let userPrivateKey = localStorage.getItem(config.lsUserPrivateKeyName)
-      if (userPrivateKey) {
-        this.$store.commit('setLoginStatus', {isLogin: true, userName: this.username})
-        this.$router.push({path: '/'})
+      const userKeystore = localStorage.getItem(config.lsUserKeystore)
+      if (userKeystore) {
+        this.disabled = !this.disabled
+        try {
+          const privateKey = Crypto.decrypt(userKeystore, this.password)
+          const publicKey = ecc.privateToPublic(privateKey)
+          // 通过uid获取通过用户私钥
+          this.getTableRowsForAjax(toApiFormatUserName(this.username), publicKey)
+        } catch (error) {
+          window.tip('用户名或密码错误')
+          this.disabled = !this.disabled
+          return false
+        }
+      } else {
+        window.tip('请导入您的keystore')
       }
-      this.disabled = !this.disabled
+    },
+    getTableRowsForAjax (lowerBound, publicKey) {
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: config.contractAccount,
+        lower_bound: lowerBound,
+        upper_bound: '',
+        index_position: 1,
+        table: 'users',
+        limit: 1
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let row = res.rows[0]
+          if (row.username === params.lower_bound) {
+            if (publicKey === row.pubkey) {
+              _that.$store.commit('setLoginStatus', {isLogin: true, userName: row.nickname, lock: _that.password})
+              _that.$router.push({path: '/'})
+              _that.disabled = !_that.disabled
+            }
+          } else {
+            window.tip('用户名或密码错误')
+            return false
+          }
+        }
+      })
     }
   }
 }
