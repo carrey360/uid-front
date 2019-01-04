@@ -57,6 +57,7 @@ export default {
       code: config.contractAccount,
       scope: config.contractAccount,
       table: 'dapps',
+      index_position: 1,
       limit: 50
     }
     this.getTableRowsForAjax(params)
