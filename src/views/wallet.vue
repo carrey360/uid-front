@@ -3,11 +3,12 @@
     <topBar></topBar>
     <div class="wallet-top">
       <div>
-        <img width="140" src="../assets/wallet/wallet-icon.jpg" alt="">
+        <img v-if="userInfo.avatar" width="120" :src="userInfo.avatar" alt="">
+        <img v-else width="120" src="../assets/wallet/wallet-icon.jpg" alt="">
       </div>
       <div>
-        <h2>Name</h2>
-        <p>签名</p>
+        <h2>{{ userInfo.nickname }}</h2>
+        <p>{{ userInfo.brief || '--' }}</p>
       </div>
     </div>
     <div class="wallet-content">
@@ -20,7 +21,7 @@
             </div>
             <p class="wallet-items-balance">
               <span>余额：</span>
-              <b>{{i.balance}}</b>
+              <b>{{i.amount}}</b>
             </p>
             <div class="wallet-items-btn" v-if="i.name != 'BOS'">
               <button @click="chargeOpen = true">充值</button>
@@ -29,7 +30,7 @@
             <div class="wallet-items-btn" v-if="i.name == 'BOS'">
               <button class="three" @click="chargeOpen = true">充值</button>
               <button class="three" @click="transferOpen = true">转账</button>
-              <button class="three" @click="createOpen = true">创建主网账户</button>
+              <button class="three" @click="toAccount">创建主网账户</button>
             </div>
           </div>
         </div>
@@ -56,54 +57,13 @@
         <LimitInput warn=""/>
       </div>
     </modal>
-    <modal
-      :visible="transferOpen"
-      @hide="transferOpen = false"
-      :resize-width='{1200:"476",992:"476",768:"90%"}'
-      defaultWidth="476px"
-      :animation-panel="'modal-slide-top'"
-      >
+    <modal :visible="transferOpen" @hide="transferOpen = false" :resize-width='{1200:"476",992:"476",768:"90%"}' defaultWidth="476px" :animation-panel="'modal-slide-top'">
       <h1 class="wallet-dialog-title">请输入转账信息</h1>
       <div class="wallet-dialog-content">
         <LimitInput label="Account to be credited" warn=""/>
         <LimitInput label="Amount" warn=""/>
         <LimitInput label="Memo" warn=""/>
         <button class="transfer-submit">确认转账</button>
-      </div>
-    </modal>
-    <modal
-      :visible="createOpen"
-      @hide="createOpen = false"
-      :resize-width='{1200:"476",992:"476",768:"90%"}'
-      defaultWidth="476px"
-      :animation-panel="'modal-slide-top'"
-      >
-      <h1 class="wallet-dialog-title">创建主网账号</h1>
-      <div class="wallet-dialog-content">
-        <LimitInput label="账号" warn="4-8位字符，需包含数字1-5和字母a-z两种元素"/>
-        <div class="wallet-dialog-content-input-label">
-          <span>公钥</span>
-          <span class="copy">生成新公钥</span>
-        </div>
-        <textarea class="wallet-dialog-content-textarea"></textarea>
-        <p class="wallet-dialog-content-input-remark">所有者和使用者公钥相同</p>
-        <br>
-        <div class="wallet-dialog-content-input-label">
-          <span>私钥</span>
-        </div>
-        <textarea class="wallet-dialog-content-textarea"></textarea>
-        <p class="wallet-dialog-content-input-remark-warn">不要透露给任何人</p>
-        <br>
-        <br>
-        <div class="wallet-dialog-content-text">
-          <h4>离线保存</h4>
-          <p>建议抄写或打印私钥后放置在安全地点保存</p>
-          <br>
-          <h4>请勿使用网络传输</h4>
-          <p>请勿通过网络工具传输私钥，例如用微信发送到电脑。一旦被黑 客获取造成不可挽回的资产损失</p>
-        </div>
-        <br>
-        <button class="transfer-submit">创建账号</button>
       </div>
     </modal>
   </div>
@@ -114,6 +74,8 @@ import modal from '@/components/modal'
 import topBar from '@/components/topBar'
 import LimitInput from '@/components/input'
 import IconFont from '@/components/Iconfont'
+import config from '@/utils/config'
+import { toApiFormatUserName, getTableRow } from '@/utils/'
 export default {
   name: 'App',
   components: { modal, topBar, LimitInput, IconFont },
@@ -121,20 +83,65 @@ export default {
     return {
       chargeOpen: false,
       transferOpen: false,
-      createOpen: false,
-      walletList: [{
-        name: 'BOS',
-        balance: 24222600.0202
-      }, {
-        name: 'EOS',
-        balance: 24222600.0202
-      }, {
-        name: 'HPT',
-        balance: 24222600.0202
-      }, {
-        name: 'HT',
-        balance: 24222600.0202
-      }]
+      walletList: [],
+      userInfo: {}
+    }
+  },
+  created () {
+    let nameUid = toApiFormatUserName(this.$store.state.userName)
+    this.getUserInfoForAjax(nameUid)
+    this.getUserBalanceForAjax(nameUid)
+  },
+  methods: {
+    getUserInfoForAjax (lowerBound) {
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: config.contractAccount,
+        lower_bound: lowerBound,
+        upper_bound: '',
+        index_position: 1,
+        table: 'users',
+        limit: 1
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let row = res.rows[0]
+          if (row.username === params.lower_bound) {
+            _that.userInfo = row
+          } else {
+            window.tip('查询用户出错')
+            return false
+          }
+        }
+      })
+    },
+    getUserBalanceForAjax (scope) {
+      let _that = this
+      let params = {
+        code: config.contractAccount,
+        scope: scope,
+        index_position: 1,
+        table: 'balance',
+        limit: 50
+      }
+      getTableRow(params, function (res) {
+        if (res.rows && res.rows.length > 0) {
+          let resList = []
+          res.rows.map(item => {
+            let json = item.balance.split(' ')
+            resList.push({
+              name: json[1],
+              amount: json[0],
+              ...item
+            })
+          })
+          _that.walletList = resList
+        }
+      })
+    },
+    toAccount () {
+      this.$router.push({path: '/account'})
     }
   }
 }
@@ -163,7 +170,7 @@ export default {
         color rgba(168,168,168,1)
   .wallet-content
     background rgba(250,249,252,1)
-    padding-top 40px
+    padding 40px 0
     &--layout
       max-width 900px
       margin 0 auto
@@ -209,6 +216,7 @@ export default {
               margin-right 15px
               cursor pointer
               outline none
+              background-color #fff
               &.three
                 padding 5px 12px
               &:hover
@@ -267,7 +275,10 @@ export default {
           flex 0 0 50%
 @media screen and (max-width: 768px)
   .wallet-wrapper
+    .wallet-top
+      padding 20px 16px
     .wallet-content
+      padding 20px 0
       &--layout
         .wallet-items
           flex 0 0 100%
